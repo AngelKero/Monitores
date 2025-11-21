@@ -70,6 +70,16 @@ export class ConfigComponent {
                                 </label>
                             </div>
                         </div>
+
+                        <!-- Links -->
+                        <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                            <h4 class="text-sm font-bold text-slate-300 mb-3 uppercase tracking-wider">📚 Documentación</h4>
+                            <a href="guide.html" class="flex items-center gap-3 p-2 rounded hover:bg-slate-800 transition-colors text-blue-400 hover:text-blue-300">
+                                <span>📖</span>
+                                <span>Ver Manual de Estados</span>
+                                <span class="ml-auto text-xs">→</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="bg-slate-900/50 p-4 rounded-b-2xl border-t border-slate-700 text-right">

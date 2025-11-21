@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel's Kernel - Manual de Estados</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .state-card {
+            transition: all 0.3s ease;
+        }
+        .state-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-4 md:p-8 pb-32">
+
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">
+                    Manual de Operaciones
+                </h1>
+                <p class="text-slate-400 text-lg">Guía de referencia para el Monitor de Estado Interno v3.0</p>
+            </div>
+            <a href="index.html" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors flex items-center gap-2 font-semibold border border-slate-700">
+                <span>🔙</span> Volver al Monitor
+            </a>
+        </header>
+
+        <!-- Character Stats / Intro -->
+        <section class="mb-12">
+            <div class="glass-panel p-6 rounded-2xl border border-blue-500/30 relative overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                    <svg class="w-48 h-48 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-8 relative z-10">
+                    <!-- Avatar / Class Info -->
+                    <div class="md:w-1/3 flex flex-col items-center text-center border-r border-slate-700/50 pr-0 md:pr-8">
+                        <div class="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center text-4xl border-2 border-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.5)] mb-4 relative">
+                            🧠
+                            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-slate-900 flex items-center justify-center text-[10px]">✓</div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white tracking-widest">SYSTEM_V3</h2>
+                        <p class="text-blue-400 font-mono text-sm mb-2">Clase: <span class="text-white">Neuro-Hacker</span></p>
+                        <div class="flex gap-2 mt-2">
+                            <span class="px-2 py-1 bg-slate-800 rounded text-xs border border-slate-600 font-mono text-yellow-400">Nvl. 30</span>
+                            <span class="px-2 py-1 bg-slate-800 rounded text-xs border border-slate-600 font-mono text-slate-400">XP: MAX</span>
+                        </div>
+                    </div>
+
+                    <!-- Base Stats -->
+                    <div class="md:w-2/3">
+                        <h3 class="text-lg font-bold text-slate-300 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                            <span class="text-blue-400">📊</span> Estadísticas Base
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Stat Item -->
+                            <div class="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                <div class="flex justify-between text-xs text-slate-400 mb-1 font-mono">
+                                    <span>DOPAMINA (Mana)</span>
+                                    <span class="text-blue-300">Regen: RNG</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500 w-3/4 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                                </div>
+                            </div>
+                            <!-- Stat Item -->
+                            <div class="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                <div class="flex justify-between text-xs text-slate-400 mb-1 font-mono">
+                                    <span>CUCHARAS (Stamina)</span>
+                                    <span class="text-green-300">Max: 12/día</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-500 w-1/2 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                                </div>
+                            </div>
+                            <!-- Stat Item -->
+                            <div class="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                <div class="flex justify-between text-xs text-slate-400 mb-1 font-mono">
+                                    <span>CARGA SENSORIAL (Heat)</span>
+                                    <span class="text-red-300">Crit: 90%</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-red-500 w-1/4 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                                </div>
+                            </div>
+                            <!-- Stat Item -->
+                            <div class="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                <div class="flex justify-between text-xs text-slate-400 mb-1 font-mono">
+                                    <span>BATERÍA SOCIAL (Shield)</span>
+                                    <span class="text-purple-300">Drenaje: Alto</span>
+                                </div>
+                                <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-purple-500 w-2/3 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-slate-900/50 rounded border border-slate-700/50 font-mono text-xs text-slate-400">
+                            <span class="text-green-400">> SYSTEM_LOG:</span> La unidad opera en un SO no estándar. El rendimiento varía según factores ambientales.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutorial de Interfaz -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3 border-b border-slate-700 pb-4">
+                <span class="text-slate-400">0.</span> HUD Overview (Tutorial de Interfaz)
+            </h2>
+            <p class="text-slate-400 mb-6">Documentación detallada de los componentes del monitor del sistema.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-min">
+                
+                <!-- Sensores (Large Card) -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-2 row-span-2 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-colors flex flex-col">
+                    <div class="flex items-center gap-3 mb-4 border-b border-slate-700 pb-4">
+                        <div class="text-4xl">🎚️</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300">Sensores (Vital Signs)</h3>
+                            <p class="text-xs text-slate-400 font-mono">Variables de Entrada [0-100]</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-4">Los 5 pilares de la estabilidad del sistema. Estos valores determinan el 80% del estado calculado.</p>
+                    
+                    <div class="space-y-4 flex-grow">
+                        <!-- Dopamina -->
+                        <div class="bg-slate-900/50 p-3 rounded border border-blue-900/30">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-blue-400 font-bold text-xs uppercase">Dopamina (Mana)</span>
+                                <span class="text-slate-500 text-[10px]">Neurotransmisor</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-1">Combustible de la función ejecutiva.</p>
+                            <ul class="text-[10px] text-slate-500 list-disc pl-3 space-y-0.5">
+                                <li><strong class="text-blue-300">Low (0-30):</strong> "Dolor por Aburrimiento". Dolor físico por falta de estímulo. Parálisis.</li>
+                                <li><strong class="text-blue-300">High (80-100):</strong> Manía, impulsividad, riesgo de gastos innecesarios.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Cucharas -->
+                        <div class="bg-slate-900/50 p-3 rounded border border-green-900/30">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-green-400 font-bold text-xs uppercase">Cucharas (Stamina)</span>
+                                <span class="text-slate-500 text-[10px]">Recurso Diario</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-1">Unidades de energía física/mental finita.</p>
+                            <ul class="text-[10px] text-slate-500 list-disc pl-3 space-y-0.5">
+                                <li><strong class="text-green-300">Regen:</strong> Solo se recuperan durmiendo (Descanso Largo).</li>
+                                <li><strong class="text-green-300">Cost:</strong> Todo cuesta. Ducharse = 1, Reunión = 3, Supermercado = 5.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Carga Sensorial -->
+                        <div class="bg-slate-900/50 p-3 rounded border border-red-900/30">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-red-400 font-bold text-xs uppercase">Carga Sensorial (Heat)</span>
+                                <span class="text-slate-500 text-[10px]">Medidor de Sobrecalentamiento</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-1">Acumulación de estímulos (Ruido, Luz, Texturas).</p>
+                            <ul class="text-[10px] text-slate-500 list-disc pl-3 space-y-0.5">
+                                <li><strong class="text-red-300">Critical (>90):</strong> Colapso inminente. Requiere aislamiento inmediato.</li>
+                                <li><strong class="text-red-300">Mitigation:</strong> Audífonos, oscuridad, silencio.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Batería Social -->
+                        <div class="bg-slate-900/50 p-3 rounded border border-purple-900/30">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-purple-400 font-bold text-xs uppercase">Batería Social (Shield)</span>
+                                <span class="text-slate-500 text-[10px]">Defensa</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-1">Capacidad de tolerar interacción humana (NPCs).</p>
+                            <ul class="text-[10px] text-slate-500 list-disc pl-3 space-y-0.5">
+                                <li><strong class="text-purple-300">Drain Rate:</strong> Aumenta con desconocidos o multitudes.</li>
+                                <li><strong class="text-purple-300">Empty:</strong> Activa "Escudo Social" o "Evacuación". Hablar cuesta HP.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Necesidades Bio -->
+                        <div class="bg-slate-900/50 p-3 rounded border border-emerald-900/30">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-emerald-400 font-bold text-xs uppercase">Necesidades Bio (HP)</span>
+                                <span class="text-slate-500 text-[10px]">Medidor de Supervivencia</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-1">Estado fisiológico básico (Hambre, Sed, Baño).</p>
+                            <ul class="text-[10px] text-slate-500 list-disc pl-3 space-y-0.5">
+                                <li><strong class="text-emerald-300">High (80-100):</strong> Satisfecho. Bonus de regeneración.</li>
+                                <li><strong class="text-emerald-300">Critical (0-20):</strong> "Malhumor por hambre". Bloquea funciones cognitivas superiores.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status (Wide Card) -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-2 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-purple-500/50 transition-colors">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="text-3xl">🖥️</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300">System Status</h3>
+                            <p class="text-xs text-slate-400 font-mono">Pantalla Principal / HUD</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-4">El núcleo del monitor. Procesa inputs para determinar el estado actual del personaje.</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-slate-900 p-2 rounded border border-slate-700">
+                            <span class="block text-slate-500 mb-1">Salida (Estado Actual):</span>
+                            <span class="text-white font-mono block mb-1">STATE_NAME</span>
+                            <p class="text-[10px] text-slate-500">Define el comportamiento general (e.g., "Flow", "Shutdown").</p>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded border border-slate-700">
+                            <span class="block text-slate-500 mb-1">Acción (Protocolo Activo):</span>
+                            <span class="text-white font-mono block mb-1">PROTOCOL_ID</span>
+                            <p class="text-[10px] text-slate-500">La "Quest" o tarea automática asignada para mitigar el estado.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Semáforo (Tall Card) -->
+                <div class="col-span-1 row-span-2 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-green-500/50 transition-colors flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="text-3xl">🚦</div>
+                            <h3 class="text-xl font-bold text-green-300">Threat Level</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-4">Indicador de riesgo sistémico. Determina la dificultad del entorno.</p>
+                    </div>
+                    
+                    <div class="space-y-4 flex-grow flex flex-col justify-center">
+                        <div class="p-3 rounded bg-green-900/20 border border-green-900/50 text-center group hover:bg-green-900/30 transition-colors">
+                            <div class="w-4 h-4 rounded-full bg-green-500 mx-auto mb-1 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                            <span class="text-xs text-green-400 font-bold block">NOMINAL</span>
+                            <span class="text-[10px] text-slate-500 hidden group-hover:block">Zona Segura. Regeneración activa.</span>
+                        </div>
+                        <div class="p-3 rounded bg-yellow-900/20 border border-yellow-900/50 text-center group hover:bg-yellow-900/30 transition-colors">
+                            <div class="w-4 h-4 rounded-full bg-yellow-500 mx-auto mb-1 shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
+                            <span class="text-xs text-yellow-400 font-bold block">WARN</span>
+                            <span class="text-[10px] text-slate-500 hidden group-hover:block">Listo para Combate. Consumo de recursos aumentado.</span>
+                        </div>
+                        <div class="p-3 rounded bg-red-900/20 border border-red-900/50 text-center group hover:bg-red-900/30 transition-colors">
+                            <div class="w-4 h-4 rounded-full bg-red-500 mx-auto mb-1 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
+                            <span class="text-xs text-red-400 font-bold block">CRITICAL</span>
+                            <span class="text-[10px] text-slate-500 hidden group-hover:block">Jefe Final / Modo Supervivencia. Solo funciones vitales.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Físicos -->
+                <div class="col-span-1 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-red-500/50 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="text-2xl">❤️</div>
+                        <h3 class="font-bold text-red-300">Hardware (Debuffs)</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Overrides biológicos que anulan la lógica del software.</p>
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between items-center p-1 rounded hover:bg-slate-900/50">
+                            <span class="text-red-400 font-bold">HAMBRE</span> 
+                            <span class="text-[10px] text-slate-500">-Control (Ira)</span>
+                        </div>
+                        <div class="flex justify-between items-center p-1 rounded hover:bg-slate-900/50">
+                            <span class="text-blue-400 font-bold">SUEÑO</span> 
+                            <span class="text-[10px] text-slate-500">-Lógica (Niebla Mental)</span>
+                        </div>
+                        <div class="flex justify-between items-center p-1 rounded hover:bg-slate-900/50">
+                            <span class="text-orange-400 font-bold">DOLOR</span> 
+                            <span class="text-[10px] text-slate-500">-Stamina (Drenaje)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emociones (Wide) -->
+                <div class="col-span-1 md:col-span-2 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-pink-500/50 transition-colors">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="text-3xl">🎭</div>
+                        <h3 class="text-xl font-bold text-pink-300">Status Effects (Emociones)</h3>
+                    </div>
+                    <p class="text-sm text-slate-300 mb-4">Buffs y Debuffs temporales que afectan el rendimiento del sistema.</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                        <div class="bg-slate-900/50 p-2 rounded border border-slate-700/50">
+                            <span class="text-yellow-400 block">Alegría</span>
+                            <span class="text-slate-500">+Creatividad</span>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded border border-slate-700/50">
+                            <span class="text-blue-400 block">Tristeza</span>
+                            <span class="text-slate-500">-Velocidad</span>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded border border-slate-700/50">
+                            <span class="text-red-400 block">Ansiedad</span>
+                            <span class="text-slate-500">+Alerta / -HP</span>
+                        </div>
+                        <div class="bg-slate-900/50 p-2 rounded border border-slate-700/50">
+                            <span class="text-purple-400 block">Miedo</span>
+                            <span class="text-slate-500">Modo Congelación</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulated States -->
+                <div class="col-span-1 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-cyan-500/50 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="text-2xl">🎮</div>
+                        <h3 class="font-bold text-cyan-300">Depuración (Debug)</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2">Presets de prueba.</p>
+                    <code class="block text-[10px] bg-slate-950 text-cyan-300 p-2 rounded border border-slate-800 font-mono">
+                        > FORCE_STATE<br>
+                        > LOAD_PRESET<br>
+                        > OVERRIDE
+                    </code>
+                </div>
+
+                <!-- Kernel Log (Wide) -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-slate-500/50 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="text-2xl">📟</div>
+                        <h3 class="font-bold text-slate-300">Kernel Log</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2">Registro de eventos y diagnósticos.</p>
+                    <div class="font-mono text-[10px] text-slate-500 bg-slate-950 p-2 rounded border border-slate-800">
+                        <span class="text-green-500">[10:00]</span> System Boot... OK<br>
+                        <span class="text-yellow-500">[10:05]</span> Warning: Caffeine Low<br>
+                        <span class="text-blue-500">[10:15]</span> State Change: OPTIMO -> FLOW
+                    </div>
+                </div>
+
+                <!-- Easter Eggs -->
+                <div class="col-span-1 bg-slate-800/50 p-6 rounded-xl border border-slate-700 hover:border-yellow-500/50 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="text-2xl">🥚</div>
+                        <h3 class="font-bold text-yellow-300">Secretos</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 italic">"↑ ↑ ↓ ↓ ← → ← → B A"</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Estados Base -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3 border-b border-slate-700 pb-4">
+                <span class="text-blue-400">1.</span> Mecánicas Centrales (Estados Base)
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Input -->
+                <div>
+                    <h3 class="text-xl font-semibold text-emerald-400 mb-4 uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Niveles de Entrada
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full -mr-8 -mt-8"></div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-white">OPTIMO_FLOW</h4>
+                                <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded font-mono">RNG: 40%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">Equilibrio sensorial. Capacidad de procesar información sin dolor ni aburrimiento.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-green-400 px-1.5 py-0.5 rounded border border-slate-700">+20 Focus</span>
+                                <span class="text-[10px] bg-slate-900 text-green-400 px-1.5 py-0.5 rounded border border-slate-700">+10 Mood</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Estado Predeterminado</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-blue-300">HIPO_ESTIMULADO</h4>
+                                <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded font-mono">RNG: 15%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">"Dolor por Aburrimiento". El cerebro busca estímulos desesperadamente.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-red-400 px-1.5 py-0.5 rounded border border-slate-700">-30 Focus</span>
+                                <span class="text-[10px] bg-slate-900 text-yellow-400 px-1.5 py-0.5 rounded border border-slate-700">Buscando Estímulos</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Dopamina < 40 Y Carga < 30</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-yellow-300">ALERTA_SENSORIAL</h4>
+                                <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded font-mono">RNG: 25%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">Entorno hostil. Luces brillantes, ruidos molestos. Irritabilidad.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-red-400 px-1.5 py-0.5 rounded border border-slate-700">-10 HP/sec</span>
+                                <span class="text-[10px] bg-slate-900 text-yellow-400 px-1.5 py-0.5 rounded border border-slate-700">Agitado</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Ansiedad > 50 O Carga > 45</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-orange-400">SOBRE_ESTIMULADO</h4>
+                                <span class="text-xs bg-orange-900 text-orange-300 px-2 py-1 rounded font-mono">RNG: 15%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">"Demasiada gente". Deseo de huida. Fallo verbal.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-red-400 px-1.5 py-0.5 rounded border border-slate-700">Debuff de Silencio</span>
+                                <span class="text-[10px] bg-slate-900 text-orange-400 px-1.5 py-0.5 rounded border border-slate-700">Instinto de Huida</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Ansiedad > 80</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700 border-l-4 border-l-red-500">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-red-400">SHUTDOWN</h4>
+                                <span class="text-xs bg-red-900 text-red-300 px-2 py-1 rounded font-mono">RNG: 5%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">Pantallazo azul. Desconexión total para protegerse.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-red-500 px-1.5 py-0.5 rounded border border-slate-700">SYSTEM HALT</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Carga > 65</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output -->
+                <div>
+                    <h3 class="text-xl font-semibold text-purple-400 mb-4 uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                        Rendimiento de Salida
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full -mr-8 -mt-8"></div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-white">OPERATIVO</h4>
+                                <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded font-mono">RNG: 35%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">Capacidad de iniciar y terminar tareas voluntariamente.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-green-400 px-1.5 py-0.5 rounded border border-slate-700">Ops Normales</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Predeterminado</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-pink-300">DISPERSO</h4>
+                                <span class="text-xs bg-pink-900 text-pink-300 px-2 py-1 rounded font-mono">RNG: 30%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">"Modo Ardilla". Alta energía sin dirección. Saltando entre tareas.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-green-400 px-1.5 py-0.5 rounded border border-slate-700">+50 Velocidad</span>
+                                <span class="text-[10px] bg-slate-900 text-red-400 px-1.5 py-0.5 rounded border border-slate-700">-40 Precisión</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Ansiedad > 50 O Dopamina > 65</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-yellow-300">FATIGA</h4>
+                                <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded font-mono">RNG: 20%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">Batería baja. Modo "Ahorro de Energía". Lentitud.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-red-400 px-1.5 py-0.5 rounded border border-slate-700">-50% Movimiento</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Cucharas < 40</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-orange-400">BURNOUT</h4>
+                                <span class="text-xs bg-orange-900 text-orange-300 px-2 py-1 rounded font-mono">RNG: 10%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">Batería agotada. Incapacidad para tareas complejas.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-red-400 px-1.5 py-0.5 rounded border border-slate-700">Habilidades Bloqueadas</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Cucharas < 25</div>
+                        </div>
+
+                        <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700 border-l-4 border-l-purple-500">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-purple-400">PARALISIS</h4>
+                                <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded font-mono">RNG: 5%</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-3">"Quiero pero no puedo". El cuerpo no obedece.</p>
+                            <div class="flex gap-2 mb-3">
+                                <span class="text-[10px] bg-slate-900 text-purple-400 px-1.5 py-0.5 rounded border border-slate-700">Aturdido</span>
+                            </div>
+                            <div class="text-xs font-mono text-slate-500 bg-slate-900 p-2 rounded border border-slate-700/50">Ansiedad > 80 O (Dopamina < 40 Y Cucharas >= 25)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Protocolos Estándar -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3 border-b border-slate-700 pb-4">
+                <span class="text-emerald-400">2.</span> Habilidades Activas (Protocolos)
+            </h2>
+            <p class="text-slate-400 mb-6">Procedimientos automáticos de respuesta ante situaciones cotidianas.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- SISTEMA NOMINAL -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-emerald-400">SISTEMA NOMINAL</h3>
+                        <span class="text-xs bg-emerald-900/50 text-emerald-300 px-2 py-1 rounded border border-emerald-800 font-mono">Pasiva</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Estado base de funcionamiento. Parámetros equilibrados.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Efecto:</span> Estabilidad +100
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Mantener rutinas actuales.</li>
+                        <li>Disfrutar estabilidad.</li>
+                        <li>Monitorizar cambios leves.</li>
+                    </ul>
+                </div>
+
+                <!-- EVACUACIÓN SOCIAL -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-red-400">EVACUACIÓN SOCIAL</h3>
+                        <span class="text-xs bg-red-900/50 text-red-300 px-2 py-1 rounded border border-red-800 font-mono">Lanzamiento Instantáneo</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Niveles de ansiedad insostenibles. Requiere salida inmediata.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Coste:</span> 10 Crédito Social
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Escape a baño/coche.</li>
+                        <li>Respiración 4-7-8.</li>
+                        <li>Excusa: "Me siento mal".</li>
+                    </ul>
+                </div>
+
+                <!-- ATERRIZAJE FORZOSO -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-orange-400">ATERRIZAJE FORZOSO</h3>
+                        <span class="text-xs bg-orange-900/50 text-orange-300 px-2 py-1 rounded border border-orange-800 font-mono">Emergencia</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">RAM llena, batería muerta. Colapso inminente.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Enfriamiento:</span> 8 Horas
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Brain Dump inmediato.</li>
+                        <li>Input pasivo (series conocidas).</li>
+                        <li>Prohibido redes sociales.</li>
+                    </ul>
+                </div>
+
+                <!-- ALIMENTACIÓN EMERGENCIA -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-yellow-400">ALIMENTACIÓN EMERGENCIA</h3>
+                        <span class="text-xs bg-yellow-900/50 text-yellow-300 px-2 py-1 rounded border border-yellow-800 font-mono">Consumible</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Peligro de irritabilidad extrema por hambre (Hangry).</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Efecto:</span> Restaurar HP
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Ingesta inmediata de glucosa.</li>
+                        <li>Aislamiento hasta comer.</li>
+                        <li>Pedir delivery si no hay energía.</li>
+                    </ul>
+                </div>
+
+                <!-- MANTENIMIENTO BIO -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-green-400">MANTENIMIENTO BIO</h3>
+                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-1 rounded border border-green-800 font-mono">Mantenimiento</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Necesidades básicas críticas. El cuerpo manda.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Prioridad:</span> Crítica
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Atender cuerpo YA (Baño/Agua).</li>
+                        <li>Pausar actividad mental.</li>
+                    </ul>
+                </div>
+
+                <!-- ESCUDO SOCIAL -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-blue-400">ESCUDO SOCIAL</h3>
+                        <span class="text-xs bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800 font-mono">Defensiva</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Batería social drenándose. Modo ahorro activado.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Buff:</span> Armadura Social +50
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Retirada táctica (5 min).</li>
+                        <li>Modo observador (asentir y sonreír).</li>
+                        <li>Uso de audífonos.</li>
+                    </ul>
+                </div>
+
+                <!-- DESCONGELAMIENTO -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-cyan-400">DESCONGELAMIENTO</h3>
+                        <span class="text-xs bg-cyan-900/50 text-cyan-300 px-2 py-1 rounded border border-cyan-800 font-mono">Utilidad</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Modo de Espera. Parálisis esperando un evento futuro.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Coste:</span> Tiempo
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Externalizar tiempo (alarmas).</li>
+                        <li>Romper espera con tareas simples.</li>
+                        <li>Permiso para hacer cosas.</li>
+                    </ul>
+                </div>
+
+                <!-- SQUIRREL MODE -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-pink-400">SQUIRREL MODE</h3>
+                        <span class="text-xs bg-pink-900/50 text-pink-300 px-2 py-1 rounded border border-pink-800 font-mono">Pasiva</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Enfoque láser disperso. Saltando de rama en rama.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Efecto:</span> Multitarea +20 / Foco -50
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Cerrar pestañas extra.</li>
+                        <li>Una sola meta en post-it.</li>
+                        <li>Ruido marrón.</li>
+                    </ul>
+                </div>
+
+                <!-- MODO RECUPERACIÓN -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-indigo-400">MODO RECUPERACIÓN</h3>
+                        <span class="text-xs bg-indigo-900/50 text-indigo-300 px-2 py-1 rounded border border-indigo-800 font-mono">Descanso</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Reinicio del sistema tras agotamiento.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Regeneración:</span> +10 HP/hora
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Horizontalidad (Cama/Sofá).</li>
+                        <li>Hidratación y Confort.</li>
+                        <li>Estímulos pasivos (ASMR/Lofi).</li>
+                    </ul>
+                </div>
+
+                <!-- TRAMPA HIPERFOCO -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-fuchsia-400">TRAMPA HIPERFOCO</h3>
+                        <span class="text-xs bg-fuchsia-900/50 text-fuchsia-300 px-2 py-1 rounded border border-fuchsia-800 font-mono">Trampa</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Atrapado en una tarea ignorando necesidades biológicas.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Debuff:</span> Conciencia de Hambre -100
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Poner alarma externa.</li>
+                        <li>Forzar pausa biológica.</li>
+                        <li>Cambio de contexto físico.</li>
+                    </ul>
+                </div>
+
+                <!-- WIRED BUT TIRED -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-yellow-200">WIRED BUT TIRED</h3>
+                        <span class="text-xs bg-yellow-900/50 text-yellow-200 px-2 py-1 rounded border border-yellow-800 font-mono">Fallo</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Cuerpo agotado pero mente acelerada. Imposible dormir.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Estado:</span> Sueño Bloqueado
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Reducir luz azul.</li>
+                        <li>Journaling (Brain Dump).</li>
+                        <li>Respiración profunda.</li>
+                    </ul>
+                </div>
+
+                <!-- BUNKER MODE -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-slate-400">BUNKER MODE</h3>
+                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-600 font-mono">Defensiva</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Emergencia sensorial. Protección total.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Buff:</span> Escudo Sensorial +100
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Abortar misión / Encerrarse.</li>
+                        <li>Blackout sensorial (Oscuridad).</li>
+                        <li>Presión profunda.</li>
+                    </ul>
+                </div>
+
+                <!-- REDUCCIÓN DE RUIDO -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-teal-400">REDUCCIÓN DE RUIDO</h3>
+                        <span class="text-xs bg-teal-900/50 text-teal-300 px-2 py-1 rounded border border-teal-800 font-mono">Apoyo</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Irritabilidad por entorno ruidoso/brillante.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Efecto:</span> Carga Sensorial -30
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Audífonos ON (Cancelación).</li>
+                        <li>Bajar brillo de pantallas.</li>
+                        <li>Alejarse de olores fuertes.</li>
+                    </ul>
+                </div>
+
+                <!-- AHORRO DE ENERGÍA -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-amber-600">AHORRO DE ENERGÍA</h3>
+                        <span class="text-xs bg-amber-900/50 text-amber-500 px-2 py-1 rounded border border-amber-800 font-mono">Pasiva</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Batería baja. Modo 'Solo Lectura'.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Coste:</span> 0 (Modo Regeneración)
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Decir 'NO' a todo lo nuevo.</li>
+                        <li>Cancelar reuniones no vitales.</li>
+                        <li>Tareas mecánicas (sin pensar).</li>
+                    </ul>
+                </div>
+
+                <!-- JUMPSTART -->
+                <div class="state-card bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-yellow-300">JUMPSTART</h3>
+                        <span class="text-xs bg-yellow-900/50 text-yellow-300 px-2 py-1 rounded border border-yellow-800 font-mono">Activa</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-3">Arranque de emergencia con dopamina rápida.</p>
+                    <div class="text-xs text-slate-500 bg-slate-900/50 p-2 rounded mb-2 font-mono">
+                        <span class="text-blue-400">Coste:</span> 20 Energía
+                    </div>
+                    <ul class="text-xs text-slate-500 list-disc pl-4 space-y-1">
+                        <li>Música épica a tope.</li>
+                        <li>Movimiento físico intenso.</li>
+                        <li>Gamificación inmediata.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Estados Emocionales -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3 border-b border-slate-700 pb-4">
+                <span class="text-pink-400">3.</span> Efectos de Estado (Emociones)
+            </h2>
+            <p class="text-slate-400 mb-6">Buffs y debuffs temporales que afectan el rendimiento del sistema.</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                
+                <!-- Alegría -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-yellow-500/30 hover:border-yellow-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 20%</span>
+                    <div class="text-3xl mb-2">☀️</div>
+                    <h3 class="font-bold text-yellow-400 mb-1">Alegría</h3>
+                    <p class="text-xs text-green-400 mb-1 font-mono">+10 Creatividad</p>
+                    <p class="text-xs text-slate-400">Disfruta el impulso. Es buen momento para crear.</p>
+                </div>
+
+                <!-- Tristeza -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-blue-500/30 hover:border-blue-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 15%</span>
+                    <div class="text-3xl mb-2">🌧️</div>
+                    <h3 class="font-bold text-blue-400 mb-1">Tristeza</h3>
+                    <p class="text-xs text-blue-300 mb-1 font-mono">Movimiento Lento</p>
+                    <p class="text-xs text-slate-400">Permítete sentirlo. No te fuerces a ser productivo.</p>
+                </div>
+
+                <!-- Furia -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-red-600/30 hover:border-red-500 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 10%</span>
+                    <div class="text-3xl mb-2">🔥</div>
+                    <h3 class="font-bold text-red-500 mb-1">Furia</h3>
+                    <p class="text-xs text-red-400 mb-1 font-mono">+50 Fuerza / -20 Control</p>
+                    <p class="text-xs text-slate-400">Canaliza la energía en ejercicio o escritura.</p>
+                </div>
+
+                <!-- Temor -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-purple-600/30 hover:border-purple-500 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 15%</span>
+                    <div class="text-3xl mb-2">⚡️</div>
+                    <h3 class="font-bold text-purple-400 mb-1">Temor</h3>
+                    <p class="text-xs text-purple-300 mb-1 font-mono">Alerta Aumentada</p>
+                    <p class="text-xs text-slate-400">Identifica la amenaza. ¿Es real o es ansiedad?</p>
+                </div>
+
+                <!-- Desagrado -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-green-600/30 hover:border-green-500 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 10%</span>
+                    <div class="text-3xl mb-2">🥦</div>
+                    <h3 class="font-bold text-green-500 mb-1">Desagrado</h3>
+                    <p class="text-xs text-green-300 mb-1 font-mono">Resistencia al Veneno</p>
+                    <p class="text-xs text-slate-400">Algo en el entorno molesta. Revisa olores/luces.</p>
+                </div>
+
+                <!-- Ansiedad -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-orange-500/30 hover:border-orange-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-orange-900 text-orange-300 px-1.5 py-0.5 rounded border border-orange-800">Probabilidad: 40%</span>
+                    <div class="text-3xl mb-2">🌪️</div>
+                    <h3 class="font-bold text-orange-400 mb-1">Ansiedad</h3>
+                    <p class="text-xs text-orange-300 mb-1 font-mono">Debuff de Pánico Activo</p>
+                    <p class="text-xs text-slate-400">Respira. 4-7-8. Esto es temporal.</p>
+                </div>
+
+                <!-- Curiosidad -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-sky-500/30 hover:border-sky-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-sky-900 text-sky-300 px-1.5 py-0.5 rounded border border-sky-800">Probabilidad: 30%</span>
+                    <div class="text-3xl mb-2">🔍</div>
+                    <h3 class="font-bold text-sky-400 mb-1">Curiosidad</h3>
+                    <p class="text-xs text-sky-300 mb-1 font-mono">+30 Inteligencia</p>
+                    <p class="text-xs text-slate-400">Sigue el hilo, pero pon un timer.</p>
+                </div>
+
+                <!-- Ennui -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-indigo-900/50 hover:border-indigo-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-indigo-900 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-800">Probabilidad: 25%</span>
+                    <div class="text-3xl mb-2">(– _ –)ᶻ</div>
+                    <h3 class="font-bold text-indigo-300 mb-1">Ennui</h3>
+                    <p class="text-xs text-indigo-300 mb-1 font-mono">Drenaje de Maná</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Aburrimiento doloroso.</p>
+                    <p class="text-xs text-slate-400">Aburrimiento = falta de dopamina. Busca novedad.</p>
+                </div>
+
+                <!-- Vergüenza -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-pink-400/30 hover:border-pink-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 15%</span>
+                    <div class="text-3xl mb-2">(◞‸◟ㆀ)</div>
+                    <h3 class="font-bold text-pink-400 mb-1">Vergüenza</h3>
+                    <p class="text-xs text-pink-300 mb-1 font-mono">Carisma -50</p>
+                    <p class="text-xs text-slate-400">Nadie se acuerda tanto como tú. Sé amable.</p>
+                </div>
+
+                <!-- Nostalgia -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-amber-200/30 hover:border-amber-200 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 5%</span>
+                    <div class="text-3xl mb-2">🧸</div>
+                    <h3 class="font-bold text-amber-200 mb-1">Nostalgia</h3>
+                    <p class="text-xs text-amber-200 mb-1 font-mono">Dilatación Temporal</p>
+                    <p class="text-xs text-slate-400">Conecta con el recuerdo, pero no te quedes ahí.</p>
+                </div>
+
+                <!-- Sobrecarga -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-red-500/30 hover:border-red-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-red-900 text-red-300 px-1.5 py-0.5 rounded border border-red-800">Probabilidad: 35%</span>
+                    <div class="text-3xl mb-2">🤯</div>
+                    <h3 class="font-bold text-red-400 mb-1">Sobrecarga</h3>
+                    <p class="text-xs text-red-300 mb-1 font-mono">Sobrecalentamiento del Sistema</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Input > Capacidad.</p>
+                    <p class="text-xs text-slate-400">Reduce inputs sensoriales YA.</p>
+                </div>
+
+                <!-- Parálisis -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-cyan-200/30 hover:border-cyan-200 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-cyan-900 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-800">Probabilidad: 20%</span>
+                    <div class="text-3xl mb-2">🧊</div>
+                    <h3 class="font-bold text-cyan-200 mb-1">Parálisis</h3>
+                    <p class="text-xs text-cyan-300 mb-1 font-mono">Velocidad de Movimiento: 0</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Bloqueo ejecutivo.</p>
+                    <p class="text-xs text-slate-400">Mueve un dedo. Solo uno. Luego la mano.</p>
+                </div>
+
+                <!-- Masking -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-slate-400/30 hover:border-slate-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded border border-slate-600">Probabilidad: 80%</span>
+                    <div class="text-3xl mb-2">🎭</div>
+                    <h3 class="font-bold text-slate-400 mb-1">Masking</h3>
+                    <p class="text-xs text-slate-300 mb-1 font-mono">Sigilo +100 / Drenaje de Resistencia</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Camuflaje social.</p>
+                    <p class="text-xs text-slate-400">Es agotador. Busca un momento a solas para soltar la máscara.</p>
+                </div>
+
+                <!-- Burnout -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-stone-600/30 hover:border-stone-500 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-stone-800 text-stone-400 px-1.5 py-0.5 rounded border border-stone-700">Probabilidad: 25%</span>
+                    <div class="text-3xl mb-2">🕯️</div>
+                    <h3 class="font-bold text-stone-400 mb-1">Burnout</h3>
+                    <p class="text-xs text-stone-300 mb-1 font-mono">Fallo Crítico</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Colapso sistémico.</p>
+                    <p class="text-xs text-slate-400">Descanso radical. No hay otra cura.</p>
+                </div>
+
+                <!-- Justicia -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-orange-600/30 hover:border-orange-500 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded opacity-50 group-hover:opacity-100 transition-opacity">Probabilidad: 10%</span>
+                    <div class="text-3xl mb-2">⚖️</div>
+                    <h3 class="font-bold text-orange-500 mb-1">Justicia</h3>
+                    <p class="text-xs text-orange-300 mb-1 font-mono">Furia Justiciera</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Sensibilidad moral.</p>
+                    <p class="text-xs text-slate-400">El mundo no se arregla hoy. Cuida tu hígado.</p>
+                </div>
+
+                <!-- Stimming -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-lime-400/30 hover:border-lime-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-lime-900 text-lime-300 px-1.5 py-0.5 rounded border border-lime-800">Probabilidad: 60%</span>
+                    <div class="text-3xl mb-2">🌀</div>
+                    <h3 class="font-bold text-lime-400 mb-1">Stimming</h3>
+                    <p class="text-xs text-lime-300 mb-1 font-mono">Regeneración +5/seg</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Auto-regulación.</p>
+                    <p class="text-xs text-slate-400">Hazlo. Tu sistema nervioso se está regulando.</p>
+                </div>
+
+                <!-- Disforia (RSD) -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-rose-700/30 hover:border-rose-600 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-rose-900 text-rose-300 px-1.5 py-0.5 rounded border border-rose-800">Probabilidad: 40%</span>
+                    <div class="text-3xl mb-2">💔</div>
+                    <h3 class="font-bold text-rose-500 mb-1">Disforia (RSD)</h3>
+                    <p class="text-xs text-rose-300 mb-1 font-mono">Multiplicador de Daño x2</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Sensibilidad al rechazo.</p>
+                    <p class="text-xs text-slate-400">Es una percepción distorsionada por el dolor. Espera a que pase.</p>
+                </div>
+
+                <!-- Hiperfoco -->
+                <div class="state-card bg-slate-800 p-4 rounded-xl border border-violet-500/30 hover:border-violet-400 relative group">
+                    <span class="absolute top-3 right-3 text-[10px] bg-violet-900 text-violet-300 px-1.5 py-0.5 rounded border border-violet-800">Probabilidad: 30%</span>
+                    <div class="text-3xl mb-2">🔭</div>
+                    <h3 class="font-bold text-violet-400 mb-1">Hiperfoco</h3>
+                    <p class="text-xs text-violet-300 mb-1 font-mono">Foco +200 / Hambre -100</p>
+                    <p class="text-xs text-slate-500 mb-1 italic">Atención túnel.</p>
+                    <p class="text-xs text-slate-400">Aprovecha la ola, pero pon una alarma para comer.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Modos Especiales -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 flex items-center gap-3 border-b border-slate-700 pb-4">
+                <span class="text-purple-400">4.</span> Habilidades Definitivas (Modos Especiales)
+            </h2>
+            <p class="text-slate-400 mb-6">Estados de alto impacto activados por condiciones extremas.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- GOD MODE -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-yellow-500/30 shadow-lg shadow-yellow-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">🌟</div>
+                        <span class="text-xs bg-yellow-900/50 text-yellow-200 px-2 py-1 rounded border border-yellow-700/50">&lt;1% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-yellow-400 mb-2">GOD_MODE</h3>
+                    <p class="text-sm text-slate-300 mb-4">Flujo absoluto. Omnipotencia creativa temporal. Los límites desaparecen.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-yellow-200">Dopamina ≥ 98 + Cucharas ≥ 95</code>
+                    </div>
+                </div>
+
+                <!-- MELTDOWN -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-red-500/30 shadow-lg shadow-red-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">⚠️</div>
+                        <span class="text-xs bg-red-900/50 text-red-200 px-2 py-1 rounded border border-red-700/50">5% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-red-500 mb-2">MELTDOWN</h3>
+                    <p class="text-sm text-slate-300 mb-4">Fallo crítico. Explosión de energía desregulada por sobrecarga.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-red-300">Carga ≥ 98 + Cucharas ≤ 5</code>
+                    </div>
+                </div>
+
+                <!-- ZOMBIE MODE -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-green-900/30 shadow-lg shadow-green-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">🧟</div>
+                        <span class="text-xs bg-green-900/50 text-green-200 px-2 py-1 rounded border border-green-700/50">10% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-600 mb-2">ZOMBIE_MODE</h3>
+                    <p class="text-sm text-slate-300 mb-4">Supervivencia básica. Cerebro apagado. Solo comer y dormir.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-green-300">Bio ≥ 98 + Cucharas ≤ 5</code>
+                    </div>
+                </div>
+
+                <!-- GHOST MODE -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-slate-500/30 shadow-lg shadow-slate-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">👻</div>
+                        <span class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-600">10% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-400 mb-2">GHOST_MODE</h3>
+                    <p class="text-sm text-slate-300 mb-4">Invisibilidad. Deseo extremo de desaparecer. Retirada social.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-slate-300">Ansiedad ≥ 98 + Cucharas ≤ 30</code>
+                    </div>
+                </div>
+
+                <!-- MAGIC HOUR -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-indigo-500/30 shadow-lg shadow-indigo-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">🦉</div>
+                        <span class="text-xs bg-indigo-900/50 text-indigo-200 px-2 py-1 rounded border border-indigo-700/50">5% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-indigo-400 mb-2">MAGIC_HOUR</h3>
+                    <p class="text-sm text-slate-300 mb-4">Creatividad nocturna (3 AM). El mundo duerme, el cerebro despierta.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-indigo-300">Hora (01-06) + Dopamina ≥ 80</code>
+                    </div>
+                </div>
+
+                <!-- WIKI HOLE -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-blue-500/30 shadow-lg shadow-blue-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">🌀</div>
+                        <span class="text-xs bg-blue-900/50 text-blue-200 px-2 py-1 rounded border border-blue-700/50">15% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-400 mb-2">WIKI_HOLE</h3>
+                    <p class="text-sm text-slate-300 mb-4">Espiral de datos. Hiperfoco en información irrelevante.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">DETONANTE:</span>
+                        <code class="text-blue-300">Curiosidad + Dopamina > 60</code>
+                    </div>
+                </div>
+
+                <!-- EPIPHANY -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-cyan-400/30 shadow-lg shadow-cyan-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">🧩</div>
+                        <span class="text-xs bg-cyan-900/50 text-cyan-200 px-2 py-1 rounded border border-cyan-700/50">5% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-300 mb-2">EPIPHANY</h3>
+                    <p class="text-sm text-slate-300 mb-4">Claridad absoluta. Todo conecta. La solución aparece sola.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-cyan-200">Dopamina ≥ 90 + Cucharas ≥ 80</code>
+                    </div>
+                </div>
+
+                <!-- JUSTICE MODE -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-orange-500/30 shadow-lg shadow-orange-900/10">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">⚖️</div>
+                        <span class="text-xs bg-orange-900/50 text-orange-200 px-2 py-1 rounded border border-orange-700/50">10% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-500 mb-2">JUSTICE_MODE</h3>
+                    <p class="text-sm text-slate-300 mb-4">Furia justiciera. Necesidad imperiosa de corregir algo incorrecto.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">DETONANTE:</span>
+                        <code class="text-orange-300">Furia/Justicia + Cucharas > 40</code>
+                    </div>
+                </div>
+
+                <!-- DOOMSCROLLING -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-gray-600/30 shadow-lg shadow-black/30">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">🕸️</div>
+                        <span class="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded border border-gray-600">15% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-400 mb-2">DOOMSCROLLING</h3>
+                    <p class="text-sm text-slate-300 mb-4">Bucle de ansiedad. Consumo infinito de contenido negativo.</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">DETONANTE:</span>
+                        <code class="text-gray-300">Ansiedad + Cucharas < 30</code>
+                    </div>
+                </div>
+
+                <!-- VOID MODE -->
+                <div class="state-card bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-white/10 shadow-lg shadow-white/5">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="text-3xl">😶</div>
+                        <span class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-600">5% Prob.</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">VOID_MODE</h3>
+                    <p class="text-sm text-slate-300 mb-4">Disociación. Ausencia de emoción. "No soy real".</p>
+                    <div class="text-xs bg-slate-950/50 p-3 rounded border border-slate-700/50">
+                        <span class="text-slate-500 block mb-1">ACTIVACIÓN:</span>
+                        <code class="text-slate-400">Todas las estadísticas ≤ 5</code>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        </section>
+
+        <footer class="text-center text-slate-600 text-sm mt-20 border-t border-slate-800 pt-8">
+            <p>Angel's Kernel v3.0 - Documentación del Sistema</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
