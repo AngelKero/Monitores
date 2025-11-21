@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Erika - Detección Emocional</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-6">
+
+    <div class="max-w-3xl mx-auto">
+        <header class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-pink-500">❤️ Módulo Erika</h1>
+                <p class="text-slate-400">Algoritmo de Detección Emocional v2.1</p>
+            </div>
+            <a href="../index.html" class="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors text-sm">
+                ← Menú Principal
+            </a>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Inputs -->
+            <div class="md:col-span-2 bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                <h2 class="text-xl font-semibold mb-4 text-white">Observación de Comportamiento</h2>
+                
+                <div class="space-y-4">
+                    <!-- Tiempo Respuesta -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Tiempo de Respuesta</label>
+                        <select id="tiempoRespuesta" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500">
+                            <option value="INSTANTANEO">⚡ Instantáneo</option>
+                            <option value="DEMORADO">🐢 Demorado</option>
+                            <option value="GHOSTING">👻 Ghosting</option>
+                        </select>
+                    </div>
+
+                    <!-- Tono -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Tono de Voz / Mensaje</label>
+                        <select id="tono" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500">
+                            <option value="FELIZ">😊 Feliz</option>
+                            <option value="NEUTRAL">😐 Neutral</option>
+                            <option value="CORTANTE">🔪 Cortante</option>
+                            <option value="TRISTE">😢 Triste</option>
+                            <option value="ENOJADO">😡 Enojado</option>
+                        </select>
+                    </div>
+
+                    <!-- Lenguaje Corporal -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Lenguaje Corporal</label>
+                        <select id="lenguajeCorporal" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500">
+                            <option value="ABIERTO">👐 Abierto</option>
+                            <option value="CERRADO">🙅 Cerrado</option>
+                            <option value="EVASIVO">👀 Evasivo</option>
+                            <option value="RECHAZO">✋ Rechazo</option>
+                        </select>
+                    </div>
+
+                    <!-- Contexto -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Contexto</label>
+                        <input type="text" id="contexto" placeholder="Ej: Cenando, Viendo memes..." 
+                            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500">
+                        
+                        <!-- Quick Contexts -->
+                        <div class="flex gap-2 flex-wrap mt-2">
+                            <button onclick="quickFillContext('Cenando')" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition-colors text-slate-300">🌮 Cenando</button>
+                            <button onclick="quickFillContext('Viendo TV')" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition-colors text-slate-300">📺 Viendo TV</button>
+                            <button onclick="quickFillContext('Chat / WhatsApp')" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition-colors text-slate-300">📱 Chat</button>
+                            <button onclick="quickFillContext('En el coche')" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition-colors text-slate-300">🚗 Coche</button>
+                            <button onclick="quickFillContext('Evento Social')" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded-full transition-colors text-slate-300">🎉 Fiesta</button>
+                        </div>
+                    </div>
+
+                    <button onclick="analizar()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg transition-colors mt-4">
+                        Escanear Patrones
+                    </button>
+                </div>
+            </div>
+
+            <!-- Semáforo Output -->
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 flex flex-col items-center justify-center">
+                <h2 class="text-lg font-semibold mb-6 text-white">Estado Actual</h2>
+                
+                <div class="flex flex-col gap-4 bg-slate-900 p-4 rounded-full border border-slate-700 shadow-inner">
+                    <div id="light-red" class="w-16 h-16 rounded-full bg-red-900 transition-all duration-300 shadow-lg opacity-40"></div>
+                    <div id="light-yellow" class="w-16 h-16 rounded-full bg-yellow-900 transition-all duration-300 shadow-lg opacity-40"></div>
+                    <div id="light-green" class="w-16 h-16 rounded-full bg-green-900 transition-all duration-300 shadow-lg opacity-40"></div>
+                </div>
+                
+                <p id="status-text" class="mt-6 text-xl font-bold text-slate-500">---</p>
+            </div>
+        </div>
+
+        <!-- Protocolo -->
+        <div id="protocolo-container" class="hidden mt-8 bg-black p-6 rounded-xl border border-slate-700 font-mono">
+            <h3 class="text-pink-500 font-bold mb-4 border-b border-slate-800 pb-2">>> PROTOCOLO SUGERIDO</h3>
+            <div id="protocolo-log" class="space-y-3 text-sm"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        gsap.from("header", { duration: 1, y: -20, opacity: 0, ease: "power3.out" });
+        gsap.from(".grid > div", { duration: 0.8, y: 30, opacity: 0, stagger: 0.2, ease: "power2.out", delay: 0.3 });
+    </script>
+    <script src="logic.js"></script>
+</body>
+</html>

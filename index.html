@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel's Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖥️</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="max-w-4xl w-full text-center space-y-12">
+        <header>
+            <h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mb-4">
+                ANGEL'S OS
+            </h1>
+            <p class="text-xl text-slate-400">Centro de Comando Unificado v3.0</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Interno -->
+            <a href="interno/index.html" class="group relative block p-8 bg-slate-900 rounded-2xl border border-slate-800 hover:border-purple-500 transition-all hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                <div class="text-4xl mb-4">🧠</div>
+                <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">Kernel Interno</h2>
+                <p class="text-slate-400">Gestión de recursos, dopamina y energía ejecutiva.</p>
+            </a>
+
+            <!-- Erika -->
+            <a href="erika/index.html" class="group relative block p-8 bg-slate-900 rounded-2xl border border-slate-800 hover:border-pink-500 transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.3)]">
+                <div class="text-4xl mb-4">❤️</div>
+                <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-pink-400 transition-colors">Módulo Erika</h2>
+                <p class="text-slate-400">Detección emocional y semáforo de relación.</p>
+            </a>
+
+            <!-- Cercanos -->
+            <a href="cercanos/index.html" class="group relative block p-8 bg-slate-900 rounded-2xl border border-slate-800 hover:border-yellow-500 transition-all hover:shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+                <div class="text-4xl mb-4">👥</div>
+                <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">Gestor Cercanos</h2>
+                <p class="text-slate-400">Análisis de tono y conflictos en amigos/familia.</p>
+            </a>
+
+            <!-- NPCs -->
+            <a href="npcs/index.html" class="group relative block p-8 bg-slate-900 rounded-2xl border border-slate-800 hover:border-blue-500 transition-all hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+                <div class="text-4xl mb-4">🤖</div>
+                <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Gestor NPCs</h2>
+                <p class="text-slate-400">Respuestas automáticas para desconocidos.</p>
+            </a>
+        </div>
+
+        <footer class="text-slate-600 text-sm">
+            System Status: ONLINE | Battery: 100% | Coffee: Required
+        </footer>
+    </div>
+</body>
+</html>

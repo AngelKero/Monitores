@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor Cercanos - Co-op Mode</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👥</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-6">
+
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-yellow-400">👥 Gestor Cercanos</h1>
+                <p class="text-slate-400">Análisis de Patrones Sociales</p>
+            </div>
+            <a href="../index.html" class="px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors text-sm">
+                ← Menú Principal
+            </a>
+        </header>
+
+        <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 mb-8">
+            <h2 class="text-xl font-semibold mb-4 text-white">Nueva Interacción</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Nombre</label>
+                    <input type="text" id="nombre" placeholder="Ej: El Kevin" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-yellow-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Mensaje Recibido</label>
+                    <textarea id="mensaje" rows="3" placeholder="¿Qué te dijeron?" 
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-yellow-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Tono Detectado</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="selectTone('DESMADRE')" id="btn-DESMADRE" class="tone-btn p-3 rounded-lg border border-slate-700 hover:bg-slate-700 transition-all text-center">
+                            🤪 Desmadre
+                        </button>
+                        <button onclick="selectTone('SERIO')" id="btn-SERIO" class="tone-btn p-3 rounded-lg border border-slate-700 hover:bg-slate-700 transition-all text-center">
+                            😐 Serio
+                        </button>
+                        <button onclick="selectTone('CONFUSO')" id="btn-CONFUSO" class="tone-btn p-3 rounded-lg border border-slate-700 hover:bg-slate-700 transition-all text-center">
+                            🤔 Confuso
+                        </button>
+                        <button onclick="selectTone('DRAMA')" id="btn-DRAMA" class="tone-btn p-3 rounded-lg border border-slate-700 hover:bg-slate-700 transition-all text-center">
+                            🔥 Drama
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="analizar()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-lg transition-colors mt-4">
+                    Analizar Interacción
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div id="resultado" class="hidden bg-black p-6 rounded-xl border border-slate-700 font-mono">
+            <h3 class="text-yellow-400 font-bold mb-2">>> ANÁLISIS COMPLETADO</h3>
+            <div id="output-log" class="space-y-2 text-sm"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        gsap.from("header", { duration: 1, y: -20, opacity: 0, ease: "power3.out" });
+        gsap.from(".bg-slate-800", { duration: 0.8, scale: 0.95, opacity: 0, ease: "power2.out", delay: 0.3 });
+        gsap.from(".tone-btn", { duration: 0.5, scale: 0, opacity: 0, stagger: 0.1, ease: "back.out(1.7)", delay: 0.6 });
+    </script>
+    <script src="logic.js"></script>
+</body>
+</html>

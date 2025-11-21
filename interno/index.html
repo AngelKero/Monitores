@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel's Kernel - Simulador de Estado Interno</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Reset básico para customizar */
+        input[type=range] {
+            -webkit-appearance: none; 
+            appearance: none;
+            background: transparent; 
+            width: 100%;
+        }
+        
+        /* Track Base (la barra por defecto) */
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        /* --- GRADIENTES DE FONDO (Visual Feedback) --- */
+
+        /* Dopamina: Hipo (Blue) -> Flow (Green) -> Disperso (Orange) */
+        #dopamina::-webkit-slider-runnable-track { background: linear-gradient(90deg, #60a5fa 0%, #10b981 50%, #fbbf24 100%); }
+        #dopamina::-moz-range-track { background: linear-gradient(90deg, #60a5fa 0%, #10b981 50%, #fbbf24 100%); }
+
+        /* Cucharas: Burnout (Red) -> Fatiga (Yellow) -> Operativo (Green) */
+        #cucharas::-webkit-slider-runnable-track { background: linear-gradient(90deg, #ef4444 0%, #facc15 40%, #10b981 100%); }
+        #cucharas::-moz-range-track { background: linear-gradient(90deg, #ef4444 0%, #facc15 40%, #10b981 100%); }
+
+        /* Carga Sensorial: OK (Green) -> Alerta (Yellow) -> Shutdown (Red) */
+        #cargaSensorial::-webkit-slider-runnable-track { background: linear-gradient(90deg, #10b981 0%, #facc15 50%, #ef4444 100%); }
+        #cargaSensorial::-moz-range-track { background: linear-gradient(90deg, #10b981 0%, #facc15 50%, #ef4444 100%); }
+
+        /* Necesidades Bio: OK (Green) -> Critical (Red) */
+        #necesidadesBio::-webkit-slider-runnable-track { background: linear-gradient(90deg, #10b981 0%, #ef4444 100%); }
+        #necesidadesBio::-moz-range-track { background: linear-gradient(90deg, #10b981 0%, #ef4444 100%); }
+
+        /* Ansiedad Social: OK (Green) -> Warning (Yellow) -> Critical (Red) */
+        #ansiedadSocial::-webkit-slider-runnable-track { background: linear-gradient(90deg, #10b981 0%, #facc15 60%, #ef4444 100%); }
+        #ansiedadSocial::-moz-range-track { background: linear-gradient(90deg, #10b981 0%, #facc15 60%, #ef4444 100%); }
+
+
+        /* Thumb (la bolita) */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            margin-top: -6px; /* Centrar verticalmente */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+            border: 2px solid rgba(255,255,255,0.8); /* Borde sutil */
+        }
+        input[type=range]:active::-webkit-slider-thumb {
+            transform: scale(1.2);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        input[type=range]:active::-moz-range-thumb {
+            transform: scale(1.2);
+        }
+
+        /* Colores específicos por ID para el thumb (mantener consistencia visual) */
+        #dopamina::-webkit-slider-thumb { background: #a855f7; }
+        #dopamina::-moz-range-thumb { background: #a855f7; }
+
+        #cucharas::-webkit-slider-thumb { background: #eab308; }
+        #cucharas::-moz-range-thumb { background: #eab308; }
+
+        #cargaSensorial::-webkit-slider-thumb { background: #ef4444; }
+        #cargaSensorial::-moz-range-thumb { background: #ef4444; }
+
+        #necesidadesBio::-webkit-slider-thumb { background: #22c55e; }
+        #necesidadesBio::-moz-range-thumb { background: #22c55e; }
+
+        #ansiedadSocial::-webkit-slider-thumb { background: #3b82f6; }
+        #ansiedadSocial::-moz-range-thumb { background: #3b82f6; }
+
+        input[type=range]:focus {
+            outline: none; 
+        }
+
+        /* Custom Animations for Effects */
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        @keyframes flashRed {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(220, 38, 38, 0.3); }
+        }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        .effect-particle { position: absolute; pointer-events: none; }
+        .shake-screen { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; }
+        .flash-screen { animation: flashRed 1s infinite; }
+
+        /* ADVANCED SHADER-LIKE EFFECTS */
+        
+        /* TV Static / Void Mode */
+        .tv-static {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.15;
+            animation: staticNoise 0.5s steps(5) infinite;
+        }
+        @keyframes staticNoise {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(10px) translateY(10px); }
+        }
+        
+        .crt-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+
+        /* Doomscrolling Vignette */
+        .doom-vignette {
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.95) 100%);
+            box-shadow: inset 0 0 150px rgba(0,0,0,1);
+            animation: pulseVignette 4s infinite ease-in-out;
+        }
+        @keyframes pulseVignette {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+
+        /* Matrix / Wiki Hole Canvas */
+        #effect-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Epiphany Glow */
+        .epiphany-glow {
+            background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: pulseGlow 4s infinite ease-in-out;
+            backdrop-filter: brightness(1.2) blur(0.5px);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-4 md:p-8 pb-32 md:pb-32 text-sm md:text-base break-words">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="w-full md:w-auto">
+                <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 break-words leading-tight">
+                    🧠 Angel's KERNEL v3.0
+                </h1>
+                <p class="text-slate-400 mt-2 text-sm md:text-base break-words">Sistema Operativo Único - Simulador de Gestión de Recursos</p>
+            </div>
+            <a href="../index.html" class="w-full md:w-auto text-center px-4 py-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors text-sm shrink-0">
+                ← Menú Principal
+            </a>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative md:h-[calc(100vh-16rem)]">
+            <!-- Mobile Nav Buttons (Visible only on mobile) -->
+            <div class="md:hidden flex gap-2 mb-4 overflow-x-auto pb-2">
+                <button onclick="openMobileMenu('presets')" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                    <span>🧪</span> Simular
+                </button>
+                <button onclick="openMobileMenu('physical')" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                    <span>🩺</span> Físicos
+                </button>
+                <button onclick="openMobileMenu('easter-eggs')" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                    <span>🥚</span> Especiales
+                </button>
+            </div>
+
+            <!-- Panel de Control (Inputs) -->
+            <div id="panel-inputs" class="kernel-card bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 block">
+                <h2 class="text-lg md:text-xl font-semibold mb-6 flex items-center gap-2">
+                    <span class="text-blue-400">🎛️</span> Sensores (Inputs)
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Dopamina -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label for="dopamina" class="text-xs md:text-sm font-medium text-purple-300">Dopamina (Interés)</label>
+                            <span id="val-dopamina" class="text-xs md:text-sm font-bold text-purple-300">50</span>
+                        </div>
+                        <input type="range" id="dopamina" min="0" max="100" value="50" 
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                        <div class="flex justify-between text-[9px] md:text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-wider">
+                            <span>Aburrido</span>
+                            <span>Flow</span>
+                            <span>Disperso</span>
+                        </div>
+                    </div>
+
+                    <!-- Cucharas -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label for="cucharas" class="text-xs md:text-sm font-medium text-yellow-300">Cucharas (Energía)</label>
+                            <span id="val-cucharas" class="text-xs md:text-sm font-bold text-yellow-300">50</span>
+                        </div>
+                        <input type="range" id="cucharas" min="0" max="100" value="100" 
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-yellow-500">
+                        <div class="flex justify-between text-[9px] md:text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-wider">
+                            <span>Burnout</span>
+                            <span>Fatiga</span>
+                            <span>Energía</span>
+                        </div>
+                    </div>
+
+                    <!-- Carga Sensorial -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label for="cargaSensorial" class="text-xs md:text-sm font-medium text-red-300">Carga Sensorial (Ruido/Luz)</label>
+                            <span id="val-cargaSensorial" class="text-xs md:text-sm font-bold text-red-300">50</span>
+                        </div>
+                        <input type="range" id="cargaSensorial" min="0" max="100" value="35" 
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-red-500">
+                        <div class="flex justify-between text-[9px] md:text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-wider">
+                            <span>Calma</span>
+                            <span>Ruido</span>
+                            <span>Shutdown</span>
+                        </div>
+                    </div>
+
+                    <!-- Necesidades Bio -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label for="necesidadesBio" class="text-xs md:text-sm font-medium text-green-300">Necesidades Bio (Hambre/Sed)</label>
+                            <span id="val-necesidadesBio" class="text-xs md:text-sm font-bold text-green-300">50</span>
+                        </div>
+                        <input type="range" id="necesidadesBio" min="0" max="100" value="50" 
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-500">
+                        <div class="flex justify-between text-[9px] md:text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-wider">
+                            <span>Satisfecho</span>
+                            <span>Urgencia</span>
+                        </div>
+                    </div>
+
+                    <!-- Ansiedad Social -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label for="ansiedadSocial" class="text-xs md:text-sm font-medium text-blue-300">Ansiedad Social</label>
+                            <span id="val-ansiedadSocial" class="text-xs md:text-sm font-bold text-blue-300">50</span>
+                        </div>
+                        <input type="range" id="ansiedadSocial" min="0" max="100" value="25" 
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                        <div class="flex justify-between text-[9px] md:text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-wider">
+                            <span>Sociable</span>
+                            <span>Escudo</span>
+                            <span>Pánico</span>
+                        </div>
+                    </div>
+
+                    <!-- Emociones Básicas (Inside Out) -->
+                    <div class="pt-4 border-t border-slate-700">
+                        <h3 class="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Estado Emocional</h3>
+                        <div id="emotions-container" class="flex flex-wrap gap-2">
+                            <!-- Buttons will be injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Calculate Button -->
+                <button onclick="showOutputs()" class="md:hidden w-full mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span>🚀</span> CALCULAR ESTADO
+                </button>
+            </div>
+
+            <!-- Panel de Diagnóstico (Outputs) -->
+            <div id="panel-outputs" class="flex flex-col gap-6 hidden md:flex h-full">
+                <!-- Mobile Back Button -->
+                <button onclick="showInputs()" class="md:hidden w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-2">
+                    <span>←</span> Volver a Sensores
+                </button>
+
+                <!-- Semáforo General -->
+                <div class="kernel-card bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 flex flex-col items-center justify-center">
+                    <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center gap-2 w-full">
+                        <span class="text-yellow-400">🚦</span> Status General
+                    </h2>
+                    <div class="flex gap-4 bg-slate-900 p-4 rounded-full border border-slate-700 shadow-inner">
+                        <div id="light-red" class="w-12 h-12 rounded-full bg-red-900 transition-all duration-300 shadow-lg opacity-30"></div>
+                        <div id="light-yellow" class="w-12 h-12 rounded-full bg-yellow-900 transition-all duration-300 shadow-lg opacity-30"></div>
+                        <div id="light-green" class="w-12 h-12 rounded-full bg-green-900 transition-all duration-300 shadow-lg opacity-30"></div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p id="status-text" class="text-base md:text-lg font-bold text-slate-400 break-words">---</p>
+                        <p id="protocol-text" class="text-xs md:text-sm font-mono text-slate-500 mt-1 uppercase tracking-widest break-words">Esperando datos...</p>
+                        
+                        <!-- Botón Info Terceros -->
+                        <button id="btn-info-terceros" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-1 rounded-full transition-colors flex items-center gap-2 mx-auto">
+                            <span>ℹ️</span> ¿Qué hago si veo esto?
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estados -->
+                <div class="kernel-card bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                    <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center gap-2">
+                        <span class="text-emerald-400">📊</span> Estado del Sistema
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 text-center">
+                            <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Estimulación</p>
+                            <div id="estado-estimulacion" class="text-base md:text-lg font-bold text-white break-words">---</div>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 text-center">
+                            <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Ejecutivo</p>
+                            <div id="estado-ejecutivo" class="text-base md:text-lg font-bold text-white break-words">---</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Protocolo / Consola -->
+                <div class="kernel-card bg-black p-4 md:p-6 rounded-xl shadow-lg border border-slate-700 font-mono text-xs md:text-sm flex-1 min-h-0 overflow-y-auto relative break-words">
+                    <div class="absolute top-2 right-2 flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <h3 class="text-slate-500 mb-2 border-b border-slate-800 pb-1">>> KERNEL LOG</h3>
+                    <div id="console-output" class="space-y-2">
+                        <!-- Logs go here -->
+                        <p class="text-slate-400">Esperando input...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Control Rápido (Columna 3) -->
+            <div class="flex flex-col gap-6 hidden md:flex">
+                <!-- Presets / Debug Buttons -->
+                <div class="kernel-card bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                    <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider flex items-center gap-2">
+                        <span>🧪</span> Simular Casos
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2" id="presets-container">
+                        <!-- Buttons will be injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Physical States Buttons -->
+                <div class="kernel-card bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                    <h3 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider flex items-center gap-2">
+                        <span>🩺</span> Estados Físicos
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2" id="physical-presets-container">
+                        <!-- Buttons will be injected by JS -->
+                    </div>
+                </div>
+
+                <!-- EASTER EGGS -->
+                <div class="mt-8">
+                    <h3 class="text-slate-400 text-xs uppercase font-bold mb-3 tracking-wider flex items-center gap-2">
+                        <span>🥚</span> Easter Eggs (Rare Drops)
+                    </h3>
+                    <div class="flex gap-3">
+                        <div id="easter-eggs-container" class="grid grid-cols-1 gap-2 flex-1">
+                            <!-- JS will populate this -->
+                        </div>
+                        <!-- Vertical Severity Bar -->
+                        <div class="w-6 bg-gradient-to-b from-yellow-300 via-slate-500 to-red-600 rounded-full relative border border-slate-600 shadow-inner shrink-0 flex flex-col justify-between py-2 items-center" title="Nivel de Salud Mental / Gravedad">
+                            <!-- Indicators -->
+                            <div class="w-full h-px bg-slate-800/50"></div>
+                            <div class="w-full h-px bg-slate-800/50"></div>
+                            <div class="w-full h-px bg-slate-800/50"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacer for bottom margin -->
+            <div class="h-16 w-full"></div>
+        </div>
+    </div>
+
+    <!-- MOBILE SIDE MENUS -->
+    <!-- Menu Presets -->
+    <div id="mobile-menu-presets" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeMobileMenu('presets')"></div>
+        <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-700 p-6 overflow-y-auto shadow-2xl transform transition-transform duration-300 -translate-x-full" id="mobile-menu-presets-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🧪</span> Simular Casos</h3>
+                <button onclick="closeMobileMenu('presets')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="grid grid-cols-1 gap-2" id="mobile-presets-container">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Physical -->
+    <div id="mobile-menu-physical" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeMobileMenu('physical')"></div>
+        <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-700 p-6 overflow-y-auto shadow-2xl transform transition-transform duration-300 -translate-x-full" id="mobile-menu-physical-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🩺</span> Estados Físicos</h3>
+                <button onclick="closeMobileMenu('physical')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="grid grid-cols-1 gap-2" id="mobile-physical-container">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Easter Eggs -->
+    <div id="mobile-menu-easter-eggs" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeMobileMenu('easter-eggs')"></div>
+        <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-700 p-6 overflow-y-auto shadow-2xl transform transition-transform duration-300 -translate-x-full" id="mobile-menu-easter-eggs-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🥚</span> Modos Especiales</h3>
+                <button onclick="closeMobileMenu('easter-eggs')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="grid grid-cols-1 gap-2" id="mobile-easter-eggs-container">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        gsap.from("header", { duration: 1, y: -20, opacity: 0, ease: "power3.out" });
+        gsap.from(".grid > div", { duration: 0.8, y: 30, opacity: 0, stagger: 0.2, ease: "power2.out", delay: 0.3 });
+        // Animar sliders individualmente
+        gsap.from("input[type=range]", { duration: 0.5, x: -20, opacity: 0, stagger: 0.1, delay: 0.8 });
+    </script>
+    <!-- MODAL INFO TERCEROS -->
+    <div id="modal-info" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-800 border border-slate-600 rounded-2xl max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+                        <span id="modal-icon">👋</span> 
+                        <span id="modal-title">Guía para Humanos</span>
+                    </h3>
+                    <button id="btn-close-modal" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Estado Actual</p>
+                        <p id="modal-protocol-name" class="text-base md:text-lg font-bold text-yellow-400 break-words">---</p>
+                    </div>
+
+                    <div>
+                        <p class="text-xs md:text-sm text-slate-300 leading-relaxed break-words" id="modal-description">
+                            Selecciona un estado para ver las instrucciones.
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-900/20 p-4 rounded-lg border border-blue-800/50">
+                        <p class="text-xs text-blue-300 font-bold mb-2">💡 CÓMO AYUDAR (Terceros):</p>
+                        <ul id="modal-tips" class="text-xs md:text-sm text-slate-300 list-disc pl-4 space-y-1 break-words">
+                            <li>---</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-emerald-900/20 p-4 rounded-lg border border-emerald-800/50">
+                        <p class="text-xs text-emerald-300 font-bold mb-2">🛠️ QUÉ HACER (Usuario):</p>
+                        <ul id="modal-self-help" class="text-xs md:text-sm text-slate-300 list-disc pl-4 space-y-1 break-words">
+                            <li>---</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-900/50 p-4 rounded-b-2xl border-t border-slate-700 text-center">
+                <button id="btn-close-modal-action" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visual Effects Overlay -->
+    <div id="visual-effects-overlay" class="fixed inset-0 pointer-events-none z-40 overflow-hidden hidden">
+        <canvas id="effect-canvas"></canvas>
+    </div>
+
+    <footer class="fixed bottom-4 left-0 w-full text-center text-slate-600 text-[10px] pointer-events-none opacity-50">
+        Angel's Kernel v3.0 - System Monitor
+    </footer>
+
+    <script src="simulation.js"></script>
+</body>
+</html>
