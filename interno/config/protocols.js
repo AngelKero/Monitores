@@ -1,4 +1,4 @@
-const protocolGuides = {
+export const protocolGuides = {
     "EVACUACIÓN SOCIAL": {
         desc: "Angel está en niveles críticos de ansiedad. Su sistema nervioso está en modo 'huida'.",
         tips: ["No le hables ni le preguntes 'qué tienes'.", "Déjalo irse a un lugar privado inmediatamente.", "No te lo tomes personal, es biológico."],

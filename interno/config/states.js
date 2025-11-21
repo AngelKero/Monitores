@@ -1,4 +1,4 @@
-const NivelEstimulacion = {
+export const NivelEstimulacion = {
     HIPO_ESTIMULADO: "HIPO",   // "Boredom Pain"
     OPTIMO_FLOW: "FLOW",       // Hyperfocus
     SOBRE_ESTIMULADO: "OVER",  // Demasiado ruido
@@ -6,7 +6,7 @@ const NivelEstimulacion = {
     ALERTA_SENSORIAL: "NOISE"  // Nuevo: Mucho ruido pero manejable
 };
 
-const EstadoEjecutivo = {
+export const EstadoEjecutivo = {
     OPERATIVO: "ONLINE",
     PARALISIS: "FROZEN",       // "Quiero hacer X pero no me puedo mover"
     DISPERSO: "SQUIRREL",      // 20 pestañas abiertas

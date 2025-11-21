@@ -203,13 +203,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative md:h-[calc(100vh-16rem)]">
             <!-- Mobile Nav Buttons (Visible only on mobile) -->
             <div class="md:hidden flex gap-2 mb-4 overflow-x-auto pb-2">
-                <button onclick="openMobileMenu('presets')" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                <button id="btn-mobile-presets" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
                     <span>🧪</span> Simular
                 </button>
-                <button onclick="openMobileMenu('physical')" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                <button id="btn-mobile-physical" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
                     <span>🩺</span> Físicos
                 </button>
-                <button onclick="openMobileMenu('easter-eggs')" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                <button id="btn-mobile-easter-eggs" class="flex-1 min-w-[120px] bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm font-semibold text-slate-300 flex items-center justify-center gap-2 whitespace-nowrap">
                     <span>🥚</span> Especiales
                 </button>
             </div>
@@ -305,7 +305,7 @@
                 </div>
 
                 <!-- Mobile Calculate Button -->
-                <button onclick="showOutputs()" class="md:hidden w-full mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                <button id="btn-mobile-show-outputs" class="md:hidden w-full mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
                     <span>🚀</span> CALCULAR ESTADO
                 </button>
             </div>
@@ -313,7 +313,7 @@
             <!-- Panel de Diagnóstico (Outputs) -->
             <div id="panel-outputs" class="flex flex-col gap-6 hidden md:flex h-full">
                 <!-- Mobile Back Button -->
-                <button onclick="showInputs()" class="md:hidden w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-2">
+                <button id="btn-mobile-show-inputs" class="md:hidden w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-2">
                     <span>←</span> Volver a Sensores
                 </button>
 
@@ -421,11 +421,11 @@
     <!-- MOBILE SIDE MENUS -->
     <!-- Menu Presets -->
     <div id="mobile-menu-presets" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeMobileMenu('presets')"></div>
+        <div id="backdrop-mobile-presets" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-700 p-6 overflow-y-auto shadow-2xl transform transition-transform duration-300 -translate-x-full" id="mobile-menu-presets-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🧪</span> Simular Casos</h3>
-                <button onclick="closeMobileMenu('presets')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+                <button id="btn-close-mobile-presets" class="text-slate-400 hover:text-white text-2xl">&times;</button>
             </div>
             <div class="grid grid-cols-1 gap-2" id="mobile-presets-container">
                 <!-- Buttons injected by JS -->
@@ -435,11 +435,11 @@
 
     <!-- Menu Physical -->
     <div id="mobile-menu-physical" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeMobileMenu('physical')"></div>
+        <div id="backdrop-mobile-physical" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-700 p-6 overflow-y-auto shadow-2xl transform transition-transform duration-300 -translate-x-full" id="mobile-menu-physical-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🩺</span> Estados Físicos</h3>
-                <button onclick="closeMobileMenu('physical')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+                <button id="btn-close-mobile-physical" class="text-slate-400 hover:text-white text-2xl">&times;</button>
             </div>
             <div class="grid grid-cols-1 gap-2" id="mobile-physical-container">
                 <!-- Buttons injected by JS -->
@@ -449,11 +449,11 @@
 
     <!-- Menu Easter Eggs -->
     <div id="mobile-menu-easter-eggs" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeMobileMenu('easter-eggs')"></div>
+        <div id="backdrop-mobile-easter-eggs" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
         <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-700 p-6 overflow-y-auto shadow-2xl transform transition-transform duration-300 -translate-x-full" id="mobile-menu-easter-eggs-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🥚</span> Modos Especiales</h3>
-                <button onclick="closeMobileMenu('easter-eggs')" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+                <button id="btn-close-mobile-easter-eggs" class="text-slate-400 hover:text-white text-2xl">&times;</button>
             </div>
             <div class="grid grid-cols-1 gap-2" id="mobile-easter-eggs-container">
                 <!-- Buttons injected by JS -->
@@ -524,21 +524,6 @@
         Angel's Kernel v3.0 - System Monitor
     </footer>
 
-    <script src="config/constants.js"></script>
-    <script src="config/states.js"></script>
-    <script src="config/protocols.js"></script>
-    <script src="config/presets.js"></script>
-    <script src="config/emotions.js"></script>
-    <script src="config/easterEggs.js"></script>
-    <script src="audio.js"></script>
-    <script src="visuals/strategies.js"></script>
-    <script src="visuals/VisualEngine.js"></script>
-    <script src="components/TrafficLight.js"></script>
-    <script src="components/ModalGuide.js"></script>
-    <script src="components/PresetsComponent.js"></script>
-    <script src="components/PhysicalStatesComponent.js"></script>
-    <script src="components/EasterEggsComponent.js"></script>
-    <script src="components/EmotionsComponent.js"></script>
-    <script src="simulation.js"></script>
+    <script type="module" src="simulation.js"></script>
 </body>
 </html>

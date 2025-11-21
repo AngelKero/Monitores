@@ -3,7 +3,7 @@
  * Define el comportamiento visual para cada modo especial.
  */
 
-const VisualStrategies = {
+export const VisualStrategies = {
     GOD_MODE: {
         mount(overlay, canvas) {
             const interval = setInterval(() => {

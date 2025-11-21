@@ -1,4 +1,4 @@
-const easterEggs = {
+export const easterEggs = {
     // POSITIVOS (Requieren Salud Mental Alta)
     "🌟 Concentración absoluta": { 
         values: { dopamina: 100, cucharas: 100, cargaSensorial: 0, necesidadesBio: 0, ansiedadSocial: 0 }, 

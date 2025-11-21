@@ -1,9 +1,11 @@
+import { VisualStrategies } from './strategies.js';
+
 /**
  * Motor de Efectos Visuales
  * Gestiona la aplicación de temas y estrategias visuales.
  */
 
-class VisualEngine {
+export class VisualEngine {
     constructor() {
         this.currentCleanup = null;
         this.overlay = document.getElementById('visual-effects-overlay');
