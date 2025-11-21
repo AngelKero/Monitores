@@ -1,5 +1,5 @@
 import { KernelLogComponent } from '../components/output/KernelLogComponent.js';
-import { SoundEngine } from '../audio/audio.js';
+import { AudioManager } from '../audio/AudioManager.js';
 import { VisualEngine } from '../visuals/VisualEngine.js';
 import { TrafficLightController } from '../components/output/TrafficLight.js';
 import { ModalGuideComponent } from '../components/output/ModalGuide.js';
@@ -32,7 +32,7 @@ export class BrainKernel {
         this.specialMode = null;
         this.activeEmotion = null; // Moved from global
         this.manualOverride = false; // Flag for forced modes
-        this.sound = new SoundEngine();
+        this.sound = new AudioManager();
         this.visuals = new VisualEngine();
         this.trafficLight = new TrafficLightController();
         this.modalGuide = new ModalGuideComponent();

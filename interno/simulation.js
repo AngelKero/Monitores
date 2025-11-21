@@ -4,6 +4,7 @@ import { PhysicalStatesComponent } from './components/input/PhysicalStatesCompon
 import { EasterEggsComponent } from './components/input/EasterEggsComponent.js';
 import { EmotionsComponent } from './components/input/EmotionsComponent.js';
 import { ResponsiveController } from './components/input/ResponsiveController.js';
+import { ConfigComponent } from './components/input/ConfigComponent.js';
 import { inputs } from './config/constants.js';
 
 const kernel = new BrainKernel();
@@ -46,11 +47,12 @@ inputs.forEach(id => {
 });
 
 // Initialize UI Components
-const presetsComponent = new PresetsComponent(kernel);
-const physicalStatesComponent = new PhysicalStatesComponent(kernel);
-const easterEggsComponent = new EasterEggsComponent(kernel);
-const emotionsComponent = new EmotionsComponent(kernel);
-const responsiveController = new ResponsiveController();
+new PresetsComponent(kernel);
+new PhysicalStatesComponent(kernel);
+new EasterEggsComponent(kernel);
+new EmotionsComponent(kernel);
+new ConfigComponent(kernel);
+new ResponsiveController();
 
 // Run initial loop
 gameLoop();
