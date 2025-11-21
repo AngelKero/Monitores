@@ -5,6 +5,7 @@ import { EasterEggsComponent } from './components/input/EasterEggsComponent.js';
 import { EmotionsComponent } from './components/input/EmotionsComponent.js';
 import { ResponsiveController } from './components/input/ResponsiveController.js';
 import { ConfigComponent } from './components/input/ConfigComponent.js';
+import { InputBehaviorComponent } from './components/input/InputBehaviorComponent.js';
 import { inputs } from './config/constants.js';
 
 const kernel = new BrainKernel();
@@ -52,6 +53,7 @@ new PhysicalStatesComponent(kernel);
 new EasterEggsComponent(kernel);
 new EmotionsComponent(kernel);
 new ConfigComponent(kernel);
+new InputBehaviorComponent();
 new ResponsiveController();
 
 // Run initial loop
