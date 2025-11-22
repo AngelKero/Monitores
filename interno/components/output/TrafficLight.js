@@ -152,70 +152,191 @@ class EmotionHandler extends BaseHandler {
         if (!ctx.activeEmotion) return super.handle(ctx);
 
         const emoKey = ctx.activeEmotion;
-        const baseClass = "w-12 h-12 rounded-full transition-all duration-500 opacity-30 scale-90";
+        const baseClass = "w-12 h-12 rounded-full transition-all duration-500 opacity-20 scale-90 grayscale";
+        
+        // Helper to build classes
+        const build = (r, y, g, txtColor, label) => ({
+            redClass: r || baseClass,
+            yellowClass: y || baseClass,
+            greenClass: g || baseClass,
+            textClass: `mt-4 text-lg font-bold ${txtColor} tracking-widest`,
+            textContent: label
+        });
 
-        // Specific Overrides
+        // Common styles
+        const pulse = "animate-pulse";
+        const bounce = "animate-bounce";
+        const spin = "animate-spin"; // Might look weird on a circle but ok
+        
+        // --- EMOTION PATTERNS ---
+
+        // 1. HIGH ENERGY / POSITIVE
+        if (emoKey === 'joy') {
+            // Top & Bottom bright, Middle off
+            return build(
+                "w-12 h-12 rounded-full bg-yellow-400 shadow-[0_0_30px_gold] scale-110 animate-bounce",
+                null,
+                "w-12 h-12 rounded-full bg-orange-400 shadow-[0_0_30px_orange] scale-110 animate-bounce delay-100",
+                "text-yellow-400",
+                "☀️ ALEGRÍA ☀️"
+            );
+        }
+        if (emoKey === 'curiosity') {
+            // Middle light scanning (Sky Blue)
+            return build(
+                null,
+                "w-12 h-12 rounded-full bg-sky-400 shadow-[0_0_40px_cyan] scale-125 border-4 border-white",
+                null,
+                "text-sky-400",
+                "🔍 CURIOSIDAD 🔍"
+            );
+        }
+        if (emoKey === 'hyperfocus') {
+            // Laser focus: Middle Violet, others very dim
+            return build(
+                "w-12 h-12 rounded-full bg-violet-900 opacity-50 scale-75",
+                "w-12 h-12 rounded-full bg-violet-500 shadow-[0_0_50px_violet] scale-110 border-2 border-white",
+                "w-12 h-12 rounded-full bg-violet-900 opacity-50 scale-75",
+                "text-violet-400",
+                "🔭 HIPERFOCO 🔭"
+            );
+        }
+
+        // 2. LOW ENERGY / NEGATIVE
+        if (emoKey === 'sadness') {
+            // Only Bottom Blue light, dim
+            return build(
+                null,
+                null,
+                "w-12 h-12 rounded-full bg-blue-600 shadow-[0_0_20px_blue] opacity-80 scale-95",
+                "text-blue-400",
+                "🌧️ TRISTEZA 🌧️"
+            );
+        }
+        if (emoKey === 'ennui' || emoKey === 'burnout') {
+            // All gray/dim
+            return build(
+                "w-12 h-12 rounded-full bg-slate-700 opacity-40",
+                "w-12 h-12 rounded-full bg-slate-600 opacity-40",
+                "w-12 h-12 rounded-full bg-slate-700 opacity-40",
+                "text-slate-500",
+                emoKey === 'burnout' ? "🕯️ BURNOUT 🕯️" : "😑 ENNUI 😑"
+            );
+        }
+
+        // 3. HIGH AROUSAL / NEGATIVE
+        if (emoKey === 'anger' || emoKey === 'justice') {
+            // Top Red pulsing aggressively
+            return build(
+                "w-12 h-12 rounded-full bg-red-600 shadow-[0_0_40px_red] scale-110 animate-pulse",
+                "w-12 h-12 rounded-full bg-orange-900 opacity-50",
+                null,
+                "text-red-500",
+                emoKey === 'justice' ? "⚖️ JUSTICIA ⚖️" : "🔥 FURIA 🔥"
+            );
+        }
+        if (emoKey === 'anxiety' || emoKey === 'fear') {
+            // Chaotic: Red and Yellow fighting
+            return build(
+                "w-12 h-12 rounded-full bg-orange-500 shadow-[0_0_20px_orange] animate-pulse",
+                "w-12 h-12 rounded-full bg-purple-500 shadow-[0_0_20px_purple] animate-pulse delay-75",
+                null,
+                "text-orange-400",
+                emoKey === 'fear' ? "⚡️ MIEDO ⚡️" : "🌪️ ANSIEDAD 🌪️"
+            );
+        }
+        if (emoKey === 'overwhelm') {
+            // All lights ON and RED/WHITE flashing (simulated by border/bg mix)
+            const flash = "w-12 h-12 rounded-full bg-red-500 border-4 border-white shadow-[0_0_30px_red] animate-pulse";
+            return build(
+                flash,
+                flash,
+                flash,
+                "text-red-500 font-black",
+                "🤯 SOBRECARGA 🤯"
+            );
+        }
+
+        // 4. COMPLEX / NEURODIVERGENT
         if (emoKey === 'disgust') {
-            return {
-                redClass: baseClass + " bg-red-900",
-                yellowClass: "w-12 h-12 rounded-full bg-yellow-500 transition-all duration-300 shadow-[0_0_20px_rgba(234,179,8,0.8)] opacity-100 scale-110 border-2 border-green-600",
-                greenClass: baseClass + " bg-green-900",
-                textClass: "mt-4 text-lg font-bold text-green-500 tracking-widest",
-                textContent: "🤢 RECHAZO SENSORIAL 🤢"
-            };
+            // Green (Bottom) dominant but "sick" color
+            return build(
+                null,
+                "w-12 h-12 rounded-full bg-green-900 opacity-50",
+                "w-12 h-12 rounded-full bg-green-500 shadow-[0_0_20px_lime] border-4 border-green-800 scale-105",
+                "text-green-500",
+                "🤢 DESAGRADO 🤢"
+            );
         }
         if (emoKey === 'masking') {
-            return {
-                redClass: baseClass + " bg-red-900",
-                yellowClass: "w-12 h-12 rounded-full bg-slate-400 transition-all duration-300 shadow-[0_0_20px_rgba(148,163,184,0.8)] opacity-100 scale-100 border-2 border-slate-300",
-                greenClass: baseClass + " bg-green-900",
-                textClass: "mt-4 text-lg font-bold text-slate-400 tracking-widest",
-                textContent: "🎭 MASKING ACTIVO 🎭"
-            };
+            // The Mask: Top Green (Face), Middle Gray (Strain), Bottom Hidden (Real)
+            return build(
+                "w-12 h-12 rounded-full bg-emerald-400 shadow-[0_0_20px_emerald] border-4 border-slate-700 z-10", // The Mask
+                "w-12 h-12 rounded-full bg-slate-600 animate-pulse scale-75 opacity-50", // The Mechanism
+                "w-12 h-12 rounded-full bg-rose-900 opacity-30 scale-50", // The Suppressed
+                "text-emerald-400",
+                "🎭 MASKING: ON 🎭"
+            );
+        }
+        if (emoKey === 'paralysis') {
+            // Frozen Blue/Cyan, no movement
+            return build(
+                "w-12 h-12 rounded-full bg-cyan-900 opacity-50",
+                "w-12 h-12 rounded-full bg-cyan-500 shadow-[0_0_15px_cyan] opacity-80",
+                "w-12 h-12 rounded-full bg-cyan-900 opacity-50",
+                "text-cyan-400",
+                "🧊 PARÁLISIS 🧊"
+            );
         }
         if (emoKey === 'stimming') {
-            return {
-                redClass: baseClass + " bg-red-900",
-                yellowClass: baseClass + " bg-yellow-900",
-                greenClass: "w-12 h-12 rounded-full bg-lime-500 transition-all duration-300 shadow-[0_0_20px_rgba(132,204,22,0.8)] opacity-100 scale-110 border-2 border-lime-300",
-                textClass: "mt-4 text-lg font-bold text-lime-400 tracking-widest",
-                textContent: "🌀 REGULANDO... 🌀"
-            };
+            // Rainbow-ish / Flowing
+            return build(
+                "w-12 h-12 rounded-full bg-pink-500 animate-bounce delay-0",
+                "w-12 h-12 rounded-full bg-yellow-500 animate-bounce delay-100",
+                "w-12 h-12 rounded-full bg-cyan-500 animate-bounce delay-200",
+                "text-pink-400",
+                "🌀 STIMMING 🌀"
+            );
         }
 
-        // Generic Emotion Fallback
+        // 5. SPECIFIC EMOTIONAL STATES
+        if (emoKey === 'nostalgia') {
+            // Sepia tone, warm, fuzzy, "Old Photo" feel
+            return build(
+                "w-12 h-12 rounded-full bg-amber-900 opacity-40 blur-[1px]",
+                "w-12 h-12 rounded-full bg-amber-200 shadow-[0_0_30px_orange] opacity-90 animate-pulse scale-105",
+                "w-12 h-12 rounded-full bg-amber-900 opacity-40 blur-[1px]",
+                "text-amber-300",
+                "🧸 NOSTALGIA 🧸"
+            );
+        }
+
+        if (emoKey === 'embarrassment') {
+            // Hiding, small, blushing
+            return build(
+                null,
+                "w-12 h-12 rounded-full bg-pink-400 shadow-[0_0_20px_pink] scale-75 animate-pulse border-4 border-pink-200",
+                null,
+                "text-pink-300",
+                "😳 VERGÜENZA 😳"
+            );
+        }
+
+        // Fallback for others (Nostalgia, Embarrassment, RSD)
         const emo = emotions[emoKey];
         if (emo) {
-            let colorClass = "bg-slate-500";
-            let borderColor = "border-slate-400";
-            let shadowColor = "rgba(100,116,139,0.8)";
+            // Extract color class
+            const colorClass = emo.active.split(' ')[0] || "bg-gray-500";
+            const shadowColor = colorClass.replace('bg-', ''); // e.g. "pink-400"
             
-            // Extract color from config (simplified mapping)
-            if (emo.active.includes("bg-yellow")) { colorClass = "bg-yellow-500"; borderColor = "border-yellow-300"; shadowColor = "rgba(234,179,8,0.8)"; }
-            else if (emo.active.includes("bg-blue")) { colorClass = "bg-blue-500"; borderColor = "border-blue-300"; shadowColor = "rgba(59,130,246,0.8)"; }
-            else if (emo.active.includes("bg-red")) { colorClass = "bg-red-600"; borderColor = "border-red-400"; shadowColor = "rgba(220,38,38,0.8)"; }
-            else if (emo.active.includes("bg-purple")) { colorClass = "bg-purple-600"; borderColor = "border-purple-400"; shadowColor = "rgba(147,51,234,0.8)"; }
-            else if (emo.active.includes("bg-green")) { colorClass = "bg-green-600"; borderColor = "border-green-400"; shadowColor = "rgba(22,163,74,0.8)"; }
-            else if (emo.active.includes("bg-orange")) { colorClass = "bg-orange-500"; borderColor = "border-orange-300"; shadowColor = "rgba(249,115,22,0.8)"; }
-            else if (emo.active.includes("bg-sky")) { colorClass = "bg-sky-500"; borderColor = "border-sky-300"; shadowColor = "rgba(14,165,233,0.8)"; }
-            else if (emo.active.includes("bg-indigo")) { colorClass = "bg-indigo-600"; borderColor = "border-indigo-400"; shadowColor = "rgba(79,70,229,0.8)"; }
-            else if (emo.active.includes("bg-pink")) { colorClass = "bg-pink-500"; borderColor = "border-pink-300"; shadowColor = "rgba(236,72,153,0.8)"; }
-            else if (emo.active.includes("bg-amber")) { colorClass = "bg-amber-500"; borderColor = "border-amber-300"; shadowColor = "rgba(245,158,11,0.8)"; }
-            else if (emo.active.includes("bg-cyan")) { colorClass = "bg-cyan-500"; borderColor = "border-cyan-300"; shadowColor = "rgba(6,182,212,0.8)"; }
-            else if (emo.active.includes("bg-lime")) { colorClass = "bg-lime-500"; borderColor = "border-lime-300"; shadowColor = "rgba(132,204,22,0.8)"; }
-            else if (emo.active.includes("bg-rose")) { colorClass = "bg-rose-600"; borderColor = "border-rose-400"; shadowColor = "rgba(225,29,72,0.8)"; }
-            else if (emo.active.includes("bg-violet")) { colorClass = "bg-violet-600"; borderColor = "border-violet-400"; shadowColor = "rgba(124,58,237,0.8)"; }
-
-            const genericClass = `w-12 h-12 rounded-full ${colorClass} transition-all duration-300 shadow-[0_0_20px_${shadowColor}] opacity-100 scale-110 border-2 ${borderColor}`;
-            const textColor = colorClass.replace('bg-', 'text-');
-
-            return {
-                redClass: genericClass,
-                yellowClass: genericClass,
-                greenClass: genericClass,
-                textClass: `mt-4 text-lg font-bold ${textColor} tracking-widest`,
-                textContent: `${emo.label} ${emo.name.toUpperCase()} ${emo.label}`
-            };
+            // Default pattern: Middle light active with that color
+            return build(
+                null,
+                `w-12 h-12 rounded-full ${colorClass} shadow-[0_0_25px_var(--tw-shadow-color)] shadow-${shadowColor} scale-110`,
+                null,
+                `text-${shadowColor}`,
+                `${emo.label} ${emo.name.toUpperCase()} ${emo.label}`
+            );
         }
 
         return super.handle(ctx);

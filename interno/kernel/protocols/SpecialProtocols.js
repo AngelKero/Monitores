@@ -24,7 +24,6 @@ export class GodModeProtocol extends BaseProtocol {
 export class MagicHourProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'MAGIC_HOUR'; }
     matches(stats) {
-        if (this.kernel.activeEmotion === 'nostalgia' && stats.cargaSensorial < 30) return true;
         const hour = new Date().getHours();
         if (hour >= 1 && hour < 6 && stats.dopamina >= 80 && stats.cucharas >= 50) return true;
         return false;
