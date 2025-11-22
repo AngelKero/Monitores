@@ -1,5 +1,6 @@
 import { emotions } from '../../config/emotions.js';
 import { NivelEstimulacion, EstadoEjecutivo } from '../../config/states.js';
+import { AlexithymiaModal } from './AlexithymiaModal.js';
 
 /**
  * Traffic Light Component
@@ -274,6 +275,21 @@ class StandardHandler extends BaseHandler {
 export class TrafficLightController {
     constructor() {
         this.view = new TrafficLightView();
+        this.modal = new AlexithymiaModal();
+
+        // Bind clicks for Alexithymia check
+        if (this.view.red) {
+            this.view.red.style.cursor = 'pointer';
+            this.view.red.onclick = () => this.modal.open('red');
+        }
+        if (this.view.yellow) {
+            this.view.yellow.style.cursor = 'pointer';
+            this.view.yellow.onclick = () => this.modal.open('yellow');
+        }
+        if (this.view.green) {
+            this.view.green.style.cursor = 'pointer';
+            this.view.green.onclick = () => this.modal.open('green');
+        }
         
         // Configurar Chain of Responsibility
         this.chain = new SpecialModeHandler();

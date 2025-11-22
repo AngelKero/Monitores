@@ -85,7 +85,12 @@ export class BrainKernel {
         this.clearLogs();
 
         if (this.activeEmotion) {
-            this.log(`>> EMOTIONAL OVERRIDE: ${emotions[this.activeEmotion].name.toUpperCase()}`, 'info');
+            if (emotions[this.activeEmotion]) {
+                this.log(`>> EMOTIONAL OVERRIDE: ${emotions[this.activeEmotion].name.toUpperCase()}`, 'info');
+            } else {
+                console.warn(`[BrainKernel] Active emotion '${this.activeEmotion}' not found in config.`);
+                this.log(`>> EMOTIONAL OVERRIDE: ${this.activeEmotion} (Unknown)`, 'warning');
+            }
         }
 
         // --- AUTO-DETECTION OF SPECIAL MODES (EXTREMES) ---
@@ -194,9 +199,9 @@ export class BrainKernel {
             stats.necesidadesBio > 80 ||
             stats.ansiedadSocial > 80) {
             
-            this.sound.setMode('CRITICAL');
-        } else {
             this.sound.stopAll();
+        } else {
+            this.sound.setMode('DEFAULT');
         }
     }
 

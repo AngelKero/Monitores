@@ -9,6 +9,7 @@ import { InputBehaviorComponent } from './components/input/InputBehaviorComponen
 import { inputs } from './config/constants.js';
 
 const kernel = new BrainKernel();
+window.kernel = kernel; // Expose for debug and modal access
 
 // Game Loop for 60fps updates
 function gameLoop() {
@@ -51,7 +52,7 @@ inputs.forEach(id => {
 new PresetsComponent(kernel);
 new PhysicalStatesComponent(kernel);
 new EasterEggsComponent(kernel);
-new EmotionsComponent(kernel);
+window.emotionsComponent = new EmotionsComponent(kernel); // Expose for external updates
 new ConfigComponent(kernel);
 new InputBehaviorComponent();
 new ResponsiveController();
