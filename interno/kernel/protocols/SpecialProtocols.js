@@ -24,8 +24,16 @@ export class GodModeProtocol extends BaseProtocol {
 export class MagicHourProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'MAGIC_HOUR'; }
     matches(stats) {
-        const hour = new Date().getHours();
-        if (hour >= 1 && hour < 6 && stats.dopamina >= 80 && stats.cucharas >= 50) return true;
+        // Between 12:30 and 6:00 AM && stats.dopamina >= 80 && stats.cucharas >= 50
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const timeInMinutes = hours * 60 + minutes;
+        const startTime = 0 * 60 + 30; // 12:30 AM
+        const endTime = 6 * 60 + 0; // 6:00 AM
+        if (timeInMinutes >= startTime && timeInMinutes <= endTime) {
+            if (stats.dopamina >= 80 && stats.cucharas >= 50) return true;
+        }
         return false;
     }
     execute(stats) {
