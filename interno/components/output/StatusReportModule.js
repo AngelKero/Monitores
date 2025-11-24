@@ -10,6 +10,46 @@ const sanitize = (value) => {
     }[char] || char));
 };
 
+const csvEscape = (value) => {
+    const str = `${value ?? ''}`.replace(/"/g, '""');
+    if (str.search(/([",\n])/g) >= 0) {
+        return `"${str}"`;
+    }
+    return str;
+};
+
+const getTrafficState = (statusText = '') => {
+    const text = statusText.toUpperCase();
+    if (text.includes('CRIT') || text.includes('FAIL') || text.includes('MELTDOWN')) return 'critical';
+    if (text.includes('PRECA') || text.includes('ALERTA') || text.includes('WARNING')) return 'warning';
+    return 'nominal';
+};
+
+const renderTrafficLight = (state) => {
+    const base = 'w-3 h-3 rounded-full transition-all duration-300';
+    const styles = {
+        critical: ['bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.9)] opacity-100', 'bg-rose-900/40 opacity-40', 'bg-rose-900/40 opacity-40'],
+        warning: ['bg-amber-900/40 opacity-40', 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)] opacity-100', 'bg-amber-900/40 opacity-40'],
+        nominal: ['bg-emerald-900/40 opacity-40', 'bg-emerald-900/40 opacity-40', 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.9)] opacity-100']
+    };
+    const [red, yellow, green] = styles[state] || styles.nominal;
+    return `
+        <div class="flex gap-1 items-center">
+            <span class="${base} ${red}"></span>
+            <span class="${base} ${yellow}"></span>
+            <span class="${base} ${green}"></span>
+        </div>
+    `;
+};
+
+const statColorClass = (value) => {
+    const num = Number(value);
+    if (Number.isNaN(num)) return 'bg-slate-900/60 text-slate-200';
+    if (num >= 70) return 'bg-rose-500/20 text-rose-200 border border-rose-500/30';
+    if (num >= 40) return 'bg-amber-500/10 text-amber-200 border border-amber-400/30';
+    return 'bg-emerald-500/10 text-emerald-200 border border-emerald-400/30';
+};
+
 class StatusReportDB {
     constructor() {
         this.dbPromise = this.init();
@@ -62,6 +102,7 @@ class StatusReportModal {
         this.badgeEl = null;
         this.emptyEl = null;
         this.clearBtn = null;
+        this.exportBtn = null;
         this.ensureModal();
     }
 
@@ -81,12 +122,13 @@ class StatusReportModal {
                         </h3>
                     </div>
                     <div class="flex items-center gap-3">
+                            <button id="btn-export-reports-modal" class="text-xs px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-200 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors">Exportar CSV</button>
                         <button id="btn-clear-reports" class="text-xs px-3 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors">Limpiar historial</button>
                         <button data-report-close class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
                     </div>
                 </div>
                 <div class="px-6 py-4 text-xs text-slate-400 border-b border-slate-800 bg-slate-900/50">
-                    Los reportes viven en IndexedDB dentro de tu navegador. Esta vista es una preview y aún no exporta datos.
+                        Los reportes viven en IndexedDB dentro de tu navegador. Puedes exportarlos a CSV para compartir con profesionales.
                 </div>
                 <div class="max-h-[70vh] overflow-y-auto p-6 space-y-4" id="status-report-list">
                 </div>
@@ -98,6 +140,8 @@ class StatusReportModal {
         this.listEl = container.querySelector('#status-report-list');
         this.badgeEl = container.querySelector('#report-count');
         this.clearBtn = container.querySelector('#btn-clear-reports');
+        this.exportBtn = container.querySelector('#btn-export-reports-modal');
+        this.toggleExportAvailability(false);
         const closeBtn = container.querySelector('[data-report-close]');
 
         closeBtn.addEventListener('click', () => this.close());
@@ -120,6 +164,7 @@ class StatusReportModal {
     renderReports(reports) {
         if (!this.listEl) return;
         if (!reports || !reports.length) {
+            this.toggleExportAvailability(false);
             this.listEl.innerHTML = `
                 <div class="bg-slate-900/60 border border-dashed border-slate-700 rounded-xl p-6 text-center text-slate-500">
                     <p class="text-sm">Aún no hay reportes guardados.</p>
@@ -130,6 +175,7 @@ class StatusReportModal {
             return;
         }
 
+        this.toggleExportAvailability(true);
         this.badgeEl.textContent = `(${reports.length})`;
         this.listEl.innerHTML = reports.map((report) => this.renderCard(report)).join('');
     }
@@ -143,33 +189,57 @@ class StatusReportModal {
         const emotion = sanitize(report.activeEmotion || 'N/A');
         const statusText = sanitize(report.statusText || '---');
         const protocolText = sanitize(report.protocolText || '---');
+        const trafficState = getTrafficState(report.statusText);
+        const statusChipClass = trafficState === 'critical'
+            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+            : trafficState === 'warning'
+                ? 'bg-amber-500/20 text-amber-200 border border-amber-500/30'
+                : 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30';
         const statsEntries = Object.entries(report.stats || {});
         const statsGrid = statsEntries.map(([key, value]) => `
-            <div class="flex justify-between text-[11px]">
-                <span class="uppercase tracking-widest text-slate-500">${sanitize(key)}</span>
-                <span class="text-slate-300 font-semibold">${sanitize(value)}</span>
+            <div class="rounded-lg px-3 py-2 text-xs ${statColorClass(value)}">
+                <p class="uppercase tracking-[0.2em] text-[10px] text-slate-400">${sanitize(key)}</p>
+                <p class="text-sm font-semibold">${sanitize(value)}</p>
             </div>
         `).join('');
 
         return `
-            <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 shadow-inner shadow-black/40">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs text-slate-400">
-                    <span>${sanitize(date)}</span>
-                    <span class="text-slate-200 font-semibold">${statusText}</span>
+            <div class="bg-gradient-to-br from-slate-900/90 to-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-500">${sanitize(date)}</p>
+                        <h4 class="text-lg font-bold text-white flex items-center gap-3">${statusText} ${renderTrafficLight(trafficState)}</h4>
+                        <p class="text-xs text-slate-400 mt-1">${protocolText}</p>
+                    </div>
+                    <div class="flex flex-col items-start md:items-end gap-2 text-xs">
+                        <span class="px-3 py-1 rounded-full ${statusChipClass}">Semáforo: ${trafficState.toUpperCase()}</span>
+                        <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Kernel: ${sanitize(report.user?.name || 'Usuario')}</span>
+                    </div>
                 </div>
-                <div class="grid md:grid-cols-2 gap-2 text-sm text-slate-200 mt-3">
-                    <p><span class="text-slate-500 text-xs uppercase tracking-wider">Estímulo:</span> ${est}</p>
-                    <p><span class="text-slate-500 text-xs uppercase tracking-wider">Ejecutivo:</span> ${eje}</p>
-                    <p><span class="text-slate-500 text-xs uppercase tracking-wider">Protocolo:</span> ${protocol}</p>
-                    <p><span class="text-slate-500 text-xs uppercase tracking-wider">Modo Especial:</span> ${special}</p>
-                    <p><span class="text-slate-500 text-xs uppercase tracking-wider">Emoción:</span> ${emotion}</p>
-                    <p><span class="text-slate-500 text-xs uppercase tracking-wider">Kernel:</span> ${sanitize(report.user?.name || 'Usuario')}</p>
+
+                <div class="grid md:grid-cols-2 gap-3 text-sm text-white mt-4">
+                    <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-1">Estímulo</p>
+                        <p class="text-lg font-semibold text-emerald-300">${est}</p>
+                    </div>
+                    <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-1">Ejecutivo</p>
+                        <p class="text-lg font-semibold text-sky-300">${eje}</p>
+                    </div>
+                    <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-1">Protocolo</p>
+                        <p class="text-base font-semibold text-purple-200">${protocol}</p>
+                    </div>
+                    <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-1">Modo Especial / Emoción</p>
+                        <p class="text-base font-semibold text-pink-200">${special} · ${emotion}</p>
+                    </div>
                 </div>
-                <p class="text-xs text-slate-400 mt-2">${protocolText}</p>
-                <details class="mt-3 bg-slate-900/50 border border-slate-800 rounded-lg">
-                    <summary class="cursor-pointer text-xs text-slate-300 px-3 py-2 select-none">Ver sensores registrados</summary>
-                    <div class="p-3 space-y-1">${statsGrid}</div>
-                </details>
+
+                <div class="mt-5">
+                    <p class="text-[11px] uppercase tracking-[0.4em] text-slate-500 mb-2">Sensores registrados</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">${statsGrid}</div>
+                </div>
             </div>
         `;
     }
@@ -177,6 +247,20 @@ class StatusReportModal {
     bindClearHandler(handler) {
         if (!this.clearBtn) return;
         this.clearBtn.onclick = handler;
+    }
+
+    bindExportHandler(handler) {
+        if (!this.exportBtn) return;
+        this.exportBtn.onclick = (event) => {
+            event.stopPropagation();
+            handler(event);
+        };
+    }
+
+    toggleExportAvailability(enabled) {
+        if (!this.exportBtn) return;
+        this.exportBtn.disabled = !enabled;
+        this.exportBtn.classList.toggle('opacity-60', !enabled);
     }
 }
 
@@ -187,6 +271,7 @@ export class StatusReportModule {
         this.saveBtn = document.getElementById('btn-save-report');
         this.defaultSaveLabel = this.saveBtn?.innerHTML ?? '';
         this.viewBtn = document.getElementById('btn-view-reports');
+        this.modal = new StatusReportModal();
         this.isSaving = false;
         this.isSupported = typeof indexedDB !== 'undefined';
 
@@ -196,7 +281,6 @@ export class StatusReportModule {
         }
 
         this.db = new StatusReportDB();
-        this.modal = new StatusReportModal();
         this.attachEvents();
     }
 
@@ -214,6 +298,7 @@ export class StatusReportModule {
             });
         }
         this.modal.bindClearHandler(() => this.handleClear());
+        this.modal.bindExportHandler(() => this.exportReports());
     }
 
     disableFeature(message) {
@@ -225,6 +310,7 @@ export class StatusReportModule {
             this.viewBtn.disabled = true;
             this.viewBtn.classList.add('opacity-60');
         }
+        this.modal.toggleExportAvailability(false);
         this.showFeedback(message, true);
     }
 
@@ -277,6 +363,83 @@ export class StatusReportModule {
             console.error('[StatusReportModule] Error limpiando historial', error);
             this.showFeedback('No se pudo limpiar el historial', true);
         }
+    }
+
+    async exportReports() {
+        try {
+            const reports = await this.db.getAll();
+            if (!reports.length) {
+                this.showFeedback('No hay reportes para exportar', true);
+                return;
+            }
+            const headers = [
+                'Fecha Registro',
+                'Nivel Estímulo',
+                'Nivel Ejecutivo',
+                'Protocolo Activo',
+                'Modo Especial',
+                'Crisis Detectada',
+                'Emoción Activa',
+                'Estado Semáforo',
+                'Descripción Estado',
+                'Descripción Técnica',
+                'Usuario',
+            ];
+
+            const sensorKeys = Object.keys(reports[0].stats || {});
+            const allSensorKeys = new Set(sensorKeys);
+            reports.forEach(r => Object.keys(r.stats || {}).forEach(k => allSensorKeys.add(k)));
+            const sensorList = Array.from(allSensorKeys);
+            const fullHeaders = headers.concat(sensorList.map(key => `Sensor: ${key}`));
+
+            const rows = reports.map(report => {
+                const trafficState = getTrafficState(report.statusText);
+                const crisis = this.getCrisisAnnotation(report.specialMode, trafficState);
+                const base = [
+                    new Date(report.timestamp || Date.now()).toISOString(),
+                    report.estimulacion || '—',
+                    report.ejecutivo || '—',
+                    report.protocolo || 'S/N',
+                    report.specialMode || 'N/A',
+                    crisis,
+                    report.activeEmotion || 'N/A',
+                    trafficState.toUpperCase(),
+                    report.statusText || '---',
+                    report.protocolText || '---',
+                    report.user?.name || 'Usuario'
+                ];
+
+                const sensorValues = sensorList.map(key => (report.stats?.[key] ?? '')); 
+                return base.concat(sensorValues).map(csvEscape);
+            });
+
+            const csvContent = [fullHeaders.map(csvEscape).join(','), ...rows.map(row => row.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const date = new Date().toISOString().split('T')[0];
+            link.href = url;
+            link.download = `kernel_reports_${date}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            this.showFeedback('Exportación lista (CSV compatible con Excel)');
+        } catch (error) {
+            console.error('[StatusReportModule] Error exportando reportes', error);
+            this.showFeedback('No se pudo exportar el historial', true);
+        }
+    }
+
+    getCrisisAnnotation(specialMode = '', trafficState = 'nominal') {
+        const mode = (specialMode || '').toUpperCase();
+        const meltdownModes = ['MELTDOWN', 'DOOMSCROLLING', 'BUNKER_MODE'];
+        const dissociationModes = ['VOID_MODE', 'GHOST_MODE', 'ZOMBIE_MODE'];
+        if (meltdownModes.includes(mode)) return 'Meltdown / Crisis Abierta';
+        if (dissociationModes.includes(mode)) return 'Disociación / Apagón';
+        if (trafficState === 'critical') return 'Riesgo Alto (Bio o Ansiedad)';
+        if (trafficState === 'warning') return 'Estado Inestable';
+        return 'Sin crisis registrada';
     }
 
     toggleSaveButton(disabled) {
