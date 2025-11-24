@@ -122,13 +122,24 @@ export class ConfigComponent {
         modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300';
         
         modal.innerHTML = `
-            <div class="bg-slate-800 border border-slate-600 rounded-2xl max-w-4xl w-full shadow-2xl transform scale-95 transition-transform duration-300">
-                <div class="p-6">
+            <div class="bg-slate-800 border border-slate-600 rounded-2xl max-w-4xl w-full shadow-2xl transform scale-95 transition-transform duration-300 max-h-[90vh] flex flex-col config-modal-shell">
+                <div class="p-6 overflow-y-auto flex-1 config-modal-scroll">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-bold text-white flex items-center gap-2">
                             <span>⚙️</span> Configuración
                         </h3>
                         <button type="button" data-config-close class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+                    </div>
+
+                    <div class="md:hidden mb-4">
+                        <label for="config-mobile-tab" class="text-xs uppercase tracking-[0.25em] text-slate-500 block mb-2">Panel activo</label>
+                        <select id="config-mobile-tab" class="w-full bg-slate-900/70 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-sky-500">
+                            <option value="kernel">Kernel Setup</option>
+                            <option value="audio">Audio Engine</option>
+                            <option value="visual">Visual Engine</option>
+                            <option value="integrations">Integraciones</option>
+                            <option value="protocols">Protocolos</option>
+                        </select>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-6">
@@ -421,7 +432,7 @@ export class ConfigComponent {
                         </div>
                     </div>
                 </div>
-                <div class="bg-slate-900/50 p-4 rounded-b-2xl border-t border-slate-700 text-right">
+                <div class="bg-slate-900/50 p-4 rounded-b-2xl border-t border-slate-700 text-right shrink-0">
                     <button id="btn-save-config" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-purple-900/20">
                         Guardar Cambios
                     </button>
@@ -454,8 +465,14 @@ export class ConfigComponent {
 
         const tabButtons = modal.querySelectorAll('[data-tab-target]');
         const tabPanels = modal.querySelectorAll('[data-tab-panel]');
+        const mobileSelect = modal.querySelector('#config-mobile-tab');
         const activeClasses = ['bg-gradient-to-r', 'from-purple-600/70', 'to-blue-600/40', 'text-white', 'shadow-inner', 'shadow-purple-900/20', 'border-transparent', 'opacity-100'];
         const inactiveClasses = ['bg-slate-900/30', 'text-slate-300', 'border-slate-700', 'opacity-70'];
+
+        const syncMobileSelect = (targetId) => {
+            if (!mobileSelect) return;
+            if (mobileSelect.value !== targetId) mobileSelect.value = targetId;
+        };
 
         const setActiveTab = (targetId) => {
             modal.dataset.activeTab = targetId;
@@ -468,11 +485,16 @@ export class ConfigComponent {
             tabPanels.forEach(panel => {
                 panel.classList.toggle('hidden', panel.dataset.tabPanel !== targetId);
             });
+            syncMobileSelect(targetId);
         };
 
         tabButtons.forEach(btn => {
             btn.addEventListener('click', () => setActiveTab(btn.dataset.tabTarget));
         });
+
+        if (mobileSelect) {
+            mobileSelect.addEventListener('change', (e) => setActiveTab(e.target.value));
+        }
 
         setActiveTab('kernel');
 
@@ -532,8 +554,11 @@ export class ConfigComponent {
         // Small delay to allow display:block to apply before opacity transition
         setTimeout(() => {
             modal.classList.add('opacity-100');
-            modal.querySelector('div').classList.remove('scale-95');
-            modal.querySelector('div').classList.add('scale-100');
+            const shell = modal.querySelector('.config-modal-shell');
+            if (shell) {
+                shell.classList.remove('scale-95');
+                shell.classList.add('scale-100');
+            }
         }, 10);
     }
 
@@ -541,8 +566,11 @@ export class ConfigComponent {
         const modal = this.modal || document.getElementById('config-modal');
         if (!modal) return;
         modal.classList.remove('opacity-100');
-        modal.querySelector('div').classList.remove('scale-100');
-        modal.querySelector('div').classList.add('scale-95');
+        const shell = modal.querySelector('.config-modal-shell');
+        if (shell) {
+            shell.classList.remove('scale-100');
+            shell.classList.add('scale-95');
+        }
         setTimeout(() => {
             modal.classList.add('hidden');
         }, 300);
