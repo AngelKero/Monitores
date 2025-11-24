@@ -9,6 +9,7 @@ import { InputBehaviorComponent } from './components/input/InputBehaviorComponen
 import { UserSetupComponent } from './components/input/UserSetupComponent.js';
 import { TutorialComponent } from './components/input/TutorialComponent.js';
 import { AlexithymiaModal } from './components/output/AlexithymiaModal.js';
+import { StatusReportModule } from './components/output/StatusReportModule.js';
 import { inputs } from './config/constants.js';
 
 const kernel = new BrainKernel();
@@ -74,6 +75,7 @@ new UserSetupComponent(kernel);
 new TutorialComponent();
 new InputBehaviorComponent();
 new ResponsiveController();
+new StatusReportModule(kernel);
 
 // Attach Calibration Listeners
 const btnCalibration = document.getElementById('btn-calibration-help');

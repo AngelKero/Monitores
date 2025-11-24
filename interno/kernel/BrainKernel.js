@@ -41,6 +41,7 @@ export class BrainKernel {
         // Optimization Sta|te
         this.lastState = {};
         this.lastProtocol = "";
+        this.lastStats = null;
 
         // Protocol Manager
         this.protocolManager = new ProtocolManager(this);
@@ -117,6 +118,7 @@ export class BrainKernel {
 
     diagnosticarSistema(stats) {
         this.clearLogs();
+        this.lastStats = { ...stats };
 
         if (this.activeEmotion) {
             if (emotions[this.activeEmotion]) {
@@ -183,6 +185,22 @@ export class BrainKernel {
         if (stats.necesidadesBio <= 80) {
              this.updateStatusDisplay(this.estadoEstimulacion, this.estadoEjecutivo, stats);
         }
+    }
+
+    getStatusReportSnapshot() {
+        if (!this.lastStats) return null;
+
+        return {
+            timestamp: Date.now(),
+            estimulacion: this.estadoEstimulacion || null,
+            ejecutivo: this.estadoEjecutivo || null,
+            protocolo: this.lastProtocol || null,
+            specialMode: this.specialMode || null,
+            activeEmotion: this.activeEmotion || null,
+            stats: { ...this.lastStats },
+            user: { ...this.userData },
+            manualOverride: this.manualOverride
+        };
     }
 
     detectSpecialMode(stats) {
