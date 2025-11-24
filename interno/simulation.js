@@ -36,8 +36,18 @@ window.updateSimulation = function() {
         
         // Update label value (Optimized: only if changed)
         const label = document.getElementById(`val-${id}`);
-        if (label && label.textContent != val) {
-            label.textContent = val;
+        if (label) {
+            let displayVal = val;
+            
+            // Special handling for Spoons (Custom Capacity)
+            if (id === 'cucharas' && kernel.userData && kernel.userData.spoonCapacity) {
+                const spoons = Math.round((val / 100) * kernel.userData.spoonCapacity);
+                displayVal = `${spoons} / ${kernel.userData.spoonCapacity}`;
+            }
+
+            if (label.textContent != displayVal) {
+                label.textContent = displayVal;
+            }
         }
     });
 

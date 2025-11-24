@@ -14,4 +14,9 @@ export class BaseProtocol {
     execute(stats, est, eje) {
         console.warn("Protocol execute not implemented");
     }
+
+    getSpoonCount(stats) {
+        const capacity = (this.kernel.userData && this.kernel.userData.spoonCapacity) ? this.kernel.userData.spoonCapacity : 12;
+        return Math.round((stats.cucharas / 100) * capacity);
+    }
 }

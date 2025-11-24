@@ -3,8 +3,9 @@ import { BaseProtocol } from './BaseProtocol.js';
 export class GodModeProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'GOD_MODE'; }
     matches(stats) {
-        if (this.kernel.activeEmotion === 'hyperfocus' && stats.dopamina > 80 && stats.cucharas > 80) return true;
-        if (stats.dopamina >= 98 && stats.cucharas >= 95 && stats.cargaSensorial <= 5 && stats.necesidadesBio <= 5 && stats.ansiedadSocial <= 5) return true;
+        const spoons = this.getSpoonCount(stats);
+        if (this.kernel.activeEmotion === 'hyperfocus' && stats.dopamina > 80 && spoons >= 10) return true;
+        if (stats.dopamina >= 98 && spoons >= 11 && stats.cargaSensorial <= 5 && stats.necesidadesBio <= 5 && stats.ansiedadSocial <= 5) return true;
         return false;
     }
     execute(stats) {
@@ -32,7 +33,7 @@ export class MagicHourProtocol extends BaseProtocol {
         const startTime = 0 * 60 + 30; // 12:30 AM
         const endTime = 6 * 60 + 0; // 6:00 AM
         if (timeInMinutes >= startTime && timeInMinutes <= endTime) {
-            if (stats.dopamina >= 80 && stats.cucharas >= 50) return true;
+            if (stats.dopamina >= 80 && this.getSpoonCount(stats) >= 6) return true;
         }
         return false;
     }
@@ -53,7 +54,7 @@ export class MagicHourProtocol extends BaseProtocol {
 export class WikiHoleProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'WIKI_HOLE'; }
     matches(stats) {
-        if (this.kernel.activeEmotion === 'curiosity' && stats.dopamina > 60 && stats.cucharas > 30) return true;
+        if (this.kernel.activeEmotion === 'curiosity' && stats.dopamina > 60 && this.getSpoonCount(stats) >= 4) return true;
         return false;
     }
     execute(stats) {
@@ -73,7 +74,7 @@ export class WikiHoleProtocol extends BaseProtocol {
 export class JusticeModeProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'JUSTICE_MODE'; }
     matches(stats) {
-        if ((this.kernel.activeEmotion === 'anger' || this.kernel.activeEmotion === 'justice') && stats.cucharas > 40) return true;
+        if ((this.kernel.activeEmotion === 'anger' || this.kernel.activeEmotion === 'justice') && this.getSpoonCount(stats) >= 5) return true;
         return false;
     }
     execute(stats) {
@@ -93,8 +94,9 @@ export class JusticeModeProtocol extends BaseProtocol {
 export class EpiphanyProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'EPIPHANY'; }
     matches(stats) {
-        if (this.kernel.activeEmotion === 'joy' && stats.dopamina > 80 && stats.cucharas > 70) return true;
-        if (stats.dopamina >= 90 && stats.cucharas >= 80 && stats.cargaSensorial <= 20 && stats.necesidadesBio <= 20 && stats.ansiedadSocial <= 10) return true;
+        const spoons = this.getSpoonCount(stats);
+        if (this.kernel.activeEmotion === 'joy' && stats.dopamina > 80 && spoons >= 9) return true;
+        if (stats.dopamina >= 90 && spoons >= 10 && stats.cargaSensorial <= 20 && stats.necesidadesBio <= 20 && stats.ansiedadSocial <= 10) return true;
         return false;
     }
     execute(stats) {
@@ -114,8 +116,9 @@ export class EpiphanyProtocol extends BaseProtocol {
 export class VoidModeProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'VOID_MODE'; }
     matches(stats) {
-        if ((this.kernel.activeEmotion === 'sadness' || this.kernel.activeEmotion === 'shutdown') && stats.cucharas < 20) return true;
-        if (stats.dopamina <= 5 && stats.cucharas <= 5 && stats.cargaSensorial <= 5 && stats.necesidadesBio <= 5 && stats.ansiedadSocial <= 5) return true;
+        const spoons = this.getSpoonCount(stats);
+        if ((this.kernel.activeEmotion === 'sadness' || this.kernel.activeEmotion === 'shutdown') && spoons <= 2) return true;
+        if (stats.dopamina <= 5 && spoons <= 1 && stats.cargaSensorial <= 5 && stats.necesidadesBio <= 5 && stats.ansiedadSocial <= 5) return true;
         return false;
     }
     execute(stats) {
@@ -136,7 +139,7 @@ export class GhostModeProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'GHOST_MODE'; }
     matches(stats) {
         if ((this.kernel.activeEmotion === 'fear' || this.kernel.activeEmotion === 'embarrassment') && stats.ansiedadSocial > 60) return true;
-        if (stats.ansiedadSocial >= 98 && stats.cucharas <= 30) return true;
+        if (stats.ansiedadSocial >= 98 && this.getSpoonCount(stats) <= 3) return true;
         return false;
     }
     execute(stats) {
@@ -157,7 +160,7 @@ export class MeltdownProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'MELTDOWN'; }
     matches(stats) {
         if ((this.kernel.activeEmotion === 'overwhelm' || this.kernel.activeEmotion === 'rsd' || this.kernel.activeEmotion === 'meltdown') && (stats.cargaSensorial > 80 || stats.ansiedadSocial > 80)) return true;
-        if (stats.cargaSensorial >= 98 && stats.cucharas <= 5) return true;
+        if (stats.cargaSensorial >= 98 && this.getSpoonCount(stats) <= 1) return true;
         return false;
     }
     execute(stats) {
@@ -177,8 +180,9 @@ export class MeltdownProtocol extends BaseProtocol {
 export class ZombieModeProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'ZOMBIE_MODE'; }
     matches(stats) {
-        if ((this.kernel.activeEmotion === 'ennui' || this.kernel.activeEmotion === 'paralysis' || this.kernel.activeEmotion === 'burnout') && stats.cucharas < 15) return true;
-        if (stats.necesidadesBio >= 98 && stats.cucharas <= 5 && stats.dopamina <= 10) return true;
+        const spoons = this.getSpoonCount(stats);
+        if ((this.kernel.activeEmotion === 'ennui' || this.kernel.activeEmotion === 'paralysis' || this.kernel.activeEmotion === 'burnout') && spoons <= 1) return true;
+        if (stats.necesidadesBio >= 98 && spoons <= 1 && stats.dopamina <= 10) return true;
         return false;
     }
     execute(stats) {
@@ -198,7 +202,7 @@ export class ZombieModeProtocol extends BaseProtocol {
 export class DoomscrollingProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'DOOMSCROLLING'; }
     matches(stats) {
-        if (this.kernel.activeEmotion === 'anxiety' && stats.cucharas < 30) return true;
+        if (this.kernel.activeEmotion === 'anxiety' && this.getSpoonCount(stats) <= 3) return true;
         return false;
     }
     execute(stats) {

@@ -74,7 +74,9 @@ export class BrainKernel {
 
         this.userData = {
             name: 'Usuario',
-            role: 'Admin'
+            role: 'Admin',
+            spoonCapacity: 12,
+            spoonLabel: 'Cucharas'
         };
     }
 
@@ -96,6 +98,12 @@ export class BrainKernel {
 
         if (subtitle) {
             subtitle.textContent = `Sistema Operativo de ${this.userData.name} - Rol: ${this.userData.role}`;
+        }
+
+        // Update Spoon Label
+        const spoonLabel = document.getElementById('label-cucharas');
+        if (spoonLabel && this.userData.spoonLabel) {
+            spoonLabel.textContent = `${this.userData.spoonLabel} (Energía)`;
         }
     }
 
@@ -197,11 +205,32 @@ export class BrainKernel {
 
     calcularEjecucion(stats) {
         if (stats.ansiedadSocial > 80) return EstadoEjecutivo.PARALISIS;
-        if (stats.cucharas < 25) return EstadoEjecutivo.BURNOUT;
-        if (stats.cucharas < 40) return EstadoEjecutivo.FATIGA; // Nuevo estado intermedio
+
+        // Spoon Logic (Absolute vs Percentage)
+        let isBurnout = false;
+        let isFatigue = false;
+
+        if (this.userData && this.userData.spoonCapacity) {
+            const spoons = Math.round((stats.cucharas / 100) * this.userData.spoonCapacity);
+            // User Request: 0-1 Spoons = Red (Burnout), 2 Spoons = Yellow (Fatigue)
+            if (spoons <= 1) isBurnout = true;
+            else if (spoons <= 2) isFatigue = true;
+        } else {
+            // Fallback (Legacy Percentage)
+            if (stats.cucharas < 25) isBurnout = true;
+            else if (stats.cucharas < 40) isFatigue = true;
+        }
+
+        if (isBurnout) return EstadoEjecutivo.BURNOUT;
+        if (isFatigue) return EstadoEjecutivo.FATIGA;
+
         if (stats.ansiedadSocial > 50) return EstadoEjecutivo.DISPERSO;
-        if (stats.dopamina < 40 && stats.cucharas >= 25) return EstadoEjecutivo.PARALISIS;
+        
+        // Dopamine paralysis check (Low Dopamine but has energy)
+        if (stats.dopamina < 40 && !isBurnout) return EstadoEjecutivo.PARALISIS;
+        
         if (stats.dopamina > 65) return EstadoEjecutivo.DISPERSO;
+        
         return EstadoEjecutivo.OPERATIVO;
     }
 

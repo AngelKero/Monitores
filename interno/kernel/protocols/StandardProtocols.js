@@ -17,7 +17,7 @@ export class SocialEvacuationProtocol extends BaseProtocol {
 
 export class ForcedLandingProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'ATERRIZAJE FORZOSO'; }
-    matches(stats, est, eje) { return (stats.dopamina > 60 || stats.ansiedadSocial > 40) && stats.cucharas < 30; }
+    matches(stats, est, eje) { return (stats.dopamina > 60 || stats.ansiedadSocial > 40) && this.getSpoonCount(stats) <= 3; }
     execute(stats, est, eje) {
         this.log(">> PROTOCOLO: ATERRIZAJE FORZOSO.", 'warning');
         this.log("   Tu RAM está llena pero tu batería está muerta.", 'info');
@@ -33,7 +33,7 @@ export class ForcedLandingProtocol extends BaseProtocol {
 
 export class EmergencyFoodProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'ALIMENTACIÓN EMERGENCIA'; }
-    matches(stats, est, eje) { return stats.necesidadesBio > 70 && stats.cucharas < 30; }
+    matches(stats, est, eje) { return stats.necesidadesBio > 70 && this.getSpoonCount(stats) <= 3; }
     execute(stats, est, eje) {
         this.log(">> PROTOCOLO: ALIMENTACIÓN DE EMERGENCIA.", 'error');
         this.log("   Peligro de irritabilidad extrema.", 'info');
@@ -134,7 +134,7 @@ export class BioMaintenanceFlowProtocol extends BaseProtocol {
 
 export class RecoveryModeProtocol extends BaseProtocol {
     constructor(kernel) { super(kernel); this.id = 'MODO RECUPERACIÓN'; }
-    matches(stats, est, eje) { return stats.cucharas < 20 && stats.cargaSensorial < 30; }
+    matches(stats, est, eje) { return this.getSpoonCount(stats) <= 2 && stats.cargaSensorial < 30; }
     execute(stats, est, eje) {
         this.log(">> PROTOCOLO: MODO RECUPERACIÓN.", 'status');
         this.log("   El sistema se está reiniciando.", 'info');
