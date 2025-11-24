@@ -1,6 +1,6 @@
 {
-    "name": "Angel's OS",
-    "short_name": "AngelOS",
+    "name": "BrainKernel",
+    "short_name": "BrainKernel",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#020617",

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'angel-os-v1';
+const CACHE_NAME = 'brainkernel-v1';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -6,8 +6,8 @@ const ASSETS_TO_CACHE = [
     './icon.svg',
     './cercanos/index.html',
     './cercanos/logic.js',
-    './erika/index.html',
-    './erika/logic.js',
+    './relacion/index.html',
+    './relacion/logic.js',
     './npcs/index.html',
     './npcs/logic.js',
     './interno/index.html',

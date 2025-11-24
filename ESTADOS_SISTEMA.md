@@ -1,4 +1,4 @@
-# 🧠 Documentación de Estados del Sistema: Angel's Kernel
+# 🧠 Documentación de Estados del Sistema: BrainKernel
 
 Este documento detalla todos los estados posibles dentro de la simulación, sus condiciones de activación lógica y su significado fenomenológico.
 

@@ -1,6 +1,6 @@
 /**
  * ------------------------------------------------------------------
- * 🧠 Angel's KERNEL: SISTEMA OPERATIVO UNICO v3.0
+ * 🧠 BRAINKERNEL: SISTEMA OPERATIVO UNICO v3.0
  * ------------------------------------------------------------------
  * Autor: Ángel (Full Stack Dev)
  * Arquitectura: Híbrida
@@ -123,11 +123,11 @@ class BrainKernel {
 
 // --- UNIT TESTS (Casos de la Vida Real) ---
 
-const miAngel = new BrainKernel();
+const miKernel = new BrainKernel();
 
 // Escenario A: Llegas de la uni, mucho ruido en el camión, no comiste bien.
 console.log("--- ESCENARIO: Tarde de Perros ---");
-miAngel.diagnosticarSistema({
+miKernel.diagnosticarSistema({
     dopamina: 10,      // Agotado
     cucharas: 5,       // Sin energía
     cargaSensorial: 95,// Ruido al tope
@@ -137,7 +137,7 @@ miAngel.diagnosticarSistema({
 
 // Escenario B: Domingo en la mañana, aburrido, quieres programar pero no te levantas.
 console.log("\n--- ESCENARIO: Parálisis de Domingo ---");
-miAngel.diagnosticarSistema({
+miKernel.diagnosticarSistema({
     dopamina: 5,       // Aburrido a morir
     cucharas: 80,      // Tienes energía física
     cargaSensorial: 10,// Silencio total
@@ -147,7 +147,7 @@ miAngel.diagnosticarSistema({
 
 
 console.log("\n--- ESCENARIO: Ahorita ---");
-miAngel.diagnosticarSistema({
+miKernel.diagnosticarSistema({
     dopamina: 34,
     cucharas: 25,
     cargaSensorial: 89,

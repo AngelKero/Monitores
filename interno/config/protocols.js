@@ -1,12 +1,12 @@
 export const protocolGuides = {
     "EVACUACIÓN SOCIAL": {
-        desc: "Angel está en niveles críticos de ansiedad. Su sistema nervioso está en modo 'huida'.",
+        desc: "El usuario está en niveles críticos de ansiedad. Su sistema nervioso está en modo 'huida'.",
         tips: ["No le hables ni le preguntes 'qué tienes'.", "Déjalo irse a un lugar privado inmediatamente.", "No te lo tomes personal, es biológico."],
         selfHelp: ["Sal de ahí AHORA. No pidas permiso.", "Ve al baño o a tu coche.", "Respira en caja (4-4-4-4)."],
         icon: "🚨"
     },
     "ESCUDO SOCIAL": {
-        desc: "La batería social está baja. Angel puede interactuar, pero con esfuerzo limitado.",
+        desc: "La batería social está baja. El usuario puede interactuar, pero con esfuerzo limitado.",
         tips: ["Evita temas profundos o conflictivos.", "Dale espacio físico.", "Si se queda callado, es normal."],
         selfHelp: ["Ponte en modo 'observador'.", "Limita tus respuestas a lo necesario.", "Planea tu salida en 30 min."],
         icon: "🛡️"
@@ -72,7 +72,7 @@ export const protocolGuides = {
         icon: "🐿️"
     },
     "SISTEMA NOMINAL": {
-        desc: "Todo funciona correctamente. Angel está operativo y feliz.",
+        desc: "Todo funciona correctamente. El sistema está operativo y feliz.",
         tips: ["Aprovecha para hablar o colaborar.", "Disfruta el momento.", "Invítale un café."],
         selfHelp: ["Disfruta tu cerebro funcional.", "Avanza en tus proyectos importantes.", "No olvides tomar agua."],
         icon: "✅"
@@ -109,7 +109,7 @@ export const protocolGuides = {
     },
     "VOID_MODE": {
         desc: "El sistema se ha desconectado de la realidad. No hay dolor, pero tampoco hay 'tú'.",
-        tips: ["No está enojado, está reiniciando.", "No le exijas contacto visual.", "Su cuerpo está ahí, pero Angel no."],
+        tips: ["No está enojado, está reiniciando.", "No le exijas contacto visual.", "Su cuerpo está ahí, pero la mente no."],
         selfHelp: ["No luches contra la niebla.", "Toca algo frío o rugoso.", "Espera a que pase."],
         icon: "😶"
     },

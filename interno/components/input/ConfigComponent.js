@@ -8,14 +8,14 @@ export class ConfigComponent {
     }
 
     loadSettings() {
-        const saved = localStorage.getItem('angel_kernel_config');
+        const saved = localStorage.getItem('brainkernel_config');
         return saved ? JSON.parse(saved) : {
             audioSource: 'default' // 'default', 'hollow_knight', 'silent'
         };
     }
 
     saveSettings() {
-        localStorage.setItem('angel_kernel_config', JSON.stringify(this.settings));
+        localStorage.setItem('brainkernel_config', JSON.stringify(this.settings));
         this.applySettings();
     }
 
