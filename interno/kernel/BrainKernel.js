@@ -37,6 +37,9 @@ export class BrainKernel {
         this.trafficLight = new TrafficLightController();
         this.modalGuide = new ModalGuideComponent();
         this.systemStatus = new SystemStatusComponent();
+        this.defaultBodyClass = "bg-slate-900 text-slate-200 font-sans min-h-screen p-4 md:p-8 pb-32 md:pb-32 text-sm md:text-base break-words";
+        this.baseBodyClasses = this.defaultBodyClass.split(' ');
+        this.baseBodyClassesApplied = false;
 
         // Optimization Sta|te
         this.lastState = {};
@@ -156,13 +159,15 @@ export class BrainKernel {
 
         // --- SPECIAL MODES OVERRIDE ---
         if (this.specialMode) {
+            if (this.visuals?.updateUserVisuals) {
+                this.visuals.updateUserVisuals(stats);
+            }
             this.handleSpecialMode();
             this.updateSound(null, null, stats);
             return;
         }
 
-        // Reset Background (Standard)
-        document.body.className = "bg-slate-900 text-slate-200 font-sans min-h-screen p-4 md:p-8 pb-32 md:pb-32 text-sm md:text-base break-words";
+        this.ensureBaseBodyClass();
 
         this.log("[SYSTEM DIAGNOSTIC] Corriendo análisis...", 'system');
 
@@ -184,6 +189,31 @@ export class BrainKernel {
         // Update status display again at the end to ensure correct colors/text
         if (stats.necesidadesBio <= 80) {
              this.updateStatusDisplay(this.estadoEstimulacion, this.estadoEjecutivo, stats);
+        }
+
+        if (this.visuals?.updateUserVisuals) {
+            this.visuals.updateUserVisuals(stats);
+        }
+    }
+
+    ensureBaseBodyClass() {
+        if (!document?.body) return;
+        let missing = !this.baseBodyClassesApplied;
+        if (!missing) {
+            for (const cls of this.baseBodyClasses) {
+                if (!document.body.classList.contains(cls)) {
+                    missing = true;
+                    break;
+                }
+            }
+        }
+
+        if (!missing) return;
+
+        this.baseBodyClasses.forEach(cls => document.body.classList.add(cls));
+        this.baseBodyClassesApplied = true;
+        if (this.visuals?.reapplyGlassEffect) {
+            this.visuals.reapplyGlassEffect();
         }
     }
 

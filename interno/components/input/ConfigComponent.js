@@ -4,16 +4,45 @@ export class ConfigComponent {
         this.userDataKey = 'brainkernel_user_data';
         this.settings = this.loadSettings();
         this.userData = this.loadUserData();
+        this.modal = null;
         this.renderButton();
         this.renderModal();
         this.applySettings();
     }
 
-    loadSettings() {
-        const saved = localStorage.getItem('brainkernel_config');
-        return saved ? JSON.parse(saved) : {
-            audioSource: 'default' // 'default', 'hollow_knight', 'silent'
+    getDefaultSettings() {
+        return {
+            audioSource: 'default',
+            visual: {
+                theme: 'void',
+                shaderIntensity: 45,
+                particleSpeed: 30,
+                parallaxReactive: true,
+                heartSync: false,
+                glassEnabled: false
+            }
         };
+    }
+
+    loadSettings() {
+        const defaults = this.getDefaultSettings();
+        const saved = localStorage.getItem('brainkernel_config');
+        if (!saved) return defaults;
+
+        try {
+            const parsed = JSON.parse(saved);
+            return {
+                ...defaults,
+                ...parsed,
+                visual: {
+                    ...defaults.visual,
+                    ...(parsed.visual || {})
+                }
+            };
+        } catch (err) {
+            console.warn('[ConfigComponent] Config corrupta, usando defaults.', err);
+            return defaults;
+        }
     }
 
     saveSettings() {
@@ -48,9 +77,31 @@ export class ConfigComponent {
         }
     }
 
+    getVisualFormData(modal) {
+        if (!modal) return { ...this.settings.visual };
+        return {
+            theme: modal.querySelector('#visual-theme')?.value || 'void',
+            shaderIntensity: parseInt(modal.querySelector('#visual-shader-intensity')?.value ?? 45, 10) || 0,
+            particleSpeed: parseInt(modal.querySelector('#visual-particle-speed')?.value ?? 30, 10) || 0,
+            parallaxReactive: !!modal.querySelector('#visual-parallax-toggle')?.checked,
+            heartSync: !!modal.querySelector('#visual-heart-sync-toggle')?.checked,
+            glassEnabled: !!modal.querySelector('#visual-glass-toggle')?.checked
+        };
+    }
+
+    previewVisualSettings(modal) {
+        if (!this.kernel?.visuals?.applyUserSettings) return;
+        const data = this.getVisualFormData(modal);
+        this.kernel.visuals.applyUserSettings(data);
+    }
+
     applySettings() {
         if (this.kernel.sound && this.kernel.sound.setSource) {
             this.kernel.sound.setSource(this.settings.audioSource);
+        }
+
+        if (this.kernel.visuals && this.kernel.visuals.applyUserSettings) {
+            this.kernel.visuals.applyUserSettings(this.settings.visual);
         }
     }
 
@@ -77,7 +128,7 @@ export class ConfigComponent {
                         <h3 class="text-xl font-bold text-white flex items-center gap-2">
                             <span>⚙️</span> Configuración
                         </h3>
-                        <button class="text-slate-400 hover:text-white text-2xl leading-none" onclick="document.getElementById('config-modal').classList.add('hidden'); document.getElementById('config-modal').classList.remove('opacity-100');">&times;</button>
+                        <button type="button" data-config-close class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-6">
@@ -107,7 +158,7 @@ export class ConfigComponent {
                                             <p>Visual Modes</p>
                                             <p class="text-xs text-slate-300">Shaders & fondos</p>
                                         </div>
-                                        <span class="ml-auto text-[10px] uppercase tracking-widest text-amber-300">Preview</span>
+                                        <span class="ml-auto text-[10px] uppercase tracking-widest text-sky-300">Beta</span>
                                     </button>
                                     <button data-tab-target="integrations" class="tab-button w-full flex items-center gap-3 px-3 py-3 rounded-lg border text-left text-sm font-semibold transition-all duration-200">
                                         <span class="text-base">🤝</span>
@@ -130,7 +181,7 @@ export class ConfigComponent {
 
                             <div class="text-xs text-slate-500 bg-slate-900/30 border border-slate-800 rounded-lg p-3">
                                 <p class="font-semibold text-slate-300 mb-1">Modo Preview</p>
-                                <p>Los paneles con etiqueta Preview aún no alteran el kernel. Solo almacenan ideas y copy.</p>
+                                <p>Los paneles con etiqueta Preview aún no alteran el kernel. Solo almacenan ideas y copy. Visual Engine opera ahora en modo Beta, así que los ajustes ya afectan el sistema.</p>
                             </div>
                         </div>
 
@@ -244,13 +295,13 @@ export class ConfigComponent {
                                 <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
                                     <div class="flex items-center justify-between mb-2">
                                         <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wider">🌌 Visual Engine</h4>
-                                        <span class="text-[10px] text-amber-300 uppercase tracking-widest">Preview</span>
+                                        <span class="text-[10px] text-sky-300 uppercase tracking-widest">Beta</span>
                                     </div>
-                                    <p class="text-xs text-slate-400 mb-4">Explora temas y shaders que podríamos habilitar en futuras versiones.</p>
+                                    <p class="text-xs text-slate-400 mb-4">Los cambios se aplican en vivo al kernel visual. Usa Guardar para persistirlos en este dispositivo.</p>
                                     <div class="space-y-4">
                                         <div>
                                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Tema Base</label>
-                                            <select class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white">
+                                            <select id="visual-theme" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-sky-500 transition-all">
                                                 <option value="void">Void Static</option>
                                                 <option value="aurora">Aurora Boreal</option>
                                                 <option value="neon">Neon Tokyo</option>
@@ -260,20 +311,24 @@ export class ConfigComponent {
                                         <div class="grid md:grid-cols-2 gap-4">
                                             <div>
                                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Intensidad Shader</label>
-                                                <input type="range" min="0" max="100" value="45" class="w-full accent-blue-500">
+                                                <input id="visual-shader-intensity" type="range" min="0" max="100" value="45" class="w-full accent-blue-500">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Velocidad de Partículas</label>
-                                                <input type="range" min="0" max="100" value="30" class="w-full accent-pink-500">
+                                                <input id="visual-particle-speed" type="range" min="0" max="100" value="30" class="w-full accent-pink-500">
                                             </div>
                                         </div>
                                         <label class="flex items-center gap-3 text-sm text-slate-300">
-                                            <input type="checkbox" class="accent-cyan-500 w-4 h-4" checked>
+                                            <input id="visual-parallax-toggle" type="checkbox" class="accent-cyan-500 w-4 h-4" checked>
                                             Habilitar parallax según carga sensorial
                                         </label>
                                         <label class="flex items-center gap-3 text-sm text-slate-300">
-                                            <input type="checkbox" class="accent-indigo-500 w-4 h-4">
+                                            <input id="visual-heart-sync-toggle" type="checkbox" class="accent-indigo-500 w-4 h-4">
                                             Sincronizar con ritmo cardíaco (mock)
+                                        </label>
+                                        <label class="flex items-center gap-3 text-sm text-slate-300">
+                                            <input id="visual-glass-toggle" type="checkbox" class="accent-sky-400 w-4 h-4">
+                                            Habilitar transparencias tipo glassmorphism
                                         </label>
                                     </div>
                                 </div>
@@ -375,6 +430,27 @@ export class ConfigComponent {
         `;
 
         document.body.appendChild(modal);
+        this.modal = modal;
+
+        const visualSelectors = [
+            '#visual-theme',
+            '#visual-shader-intensity',
+            '#visual-particle-speed',
+            '#visual-parallax-toggle',
+            '#visual-heart-sync-toggle',
+            '#visual-glass-toggle'
+        ];
+
+        visualSelectors.forEach(selector => {
+            const el = modal.querySelector(selector);
+            if (!el) return;
+            const eventName = el.tagName === 'SELECT' ? 'change' : (el.type === 'checkbox' ? 'change' : 'input');
+            el.addEventListener(eventName, () => this.previewVisualSettings(modal));
+        });
+
+        modal.querySelectorAll('[data-config-close]').forEach(btn => {
+            btn.addEventListener('click', () => this.closeModal());
+        });
 
         const tabButtons = modal.querySelectorAll('[data-tab-target]');
         const tabPanels = modal.querySelectorAll('[data-tab-panel]');
@@ -406,8 +482,10 @@ export class ConfigComponent {
             const selected = modal.querySelector('input[name="audioSource"]:checked');
             if (selected) {
                 this.settings.audioSource = selected.value;
-                this.saveSettings();
             }
+
+            this.settings.visual = this.getVisualFormData(modal);
+            this.saveSettings();
 
             const name = modal.querySelector('#config-name').value.trim() || 'Usuario';
             const role = modal.querySelector('#config-role').value;
@@ -420,7 +498,8 @@ export class ConfigComponent {
     }
 
     openModal() {
-        const modal = document.getElementById('config-modal');
+        const modal = this.modal || document.getElementById('config-modal');
+        if (!modal) return;
         this.userData = this.loadUserData();
         const inputs = modal.querySelectorAll('input[name="audioSource"]');
         inputs.forEach(input => {
@@ -432,6 +511,23 @@ export class ConfigComponent {
         modal.querySelector('#config-spoons').value = this.userData.spoonCapacity || 12;
         modal.querySelector('#config-label').value = this.userData.spoonLabel || 'Cucharas';
 
+        const visual = this.settings.visual || this.getDefaultSettings().visual;
+        const themeSelect = modal.querySelector('#visual-theme');
+        if (themeSelect) themeSelect.value = visual.theme;
+        const shaderRange = modal.querySelector('#visual-shader-intensity');
+        if (shaderRange) shaderRange.value = visual.shaderIntensity;
+        const particleRange = modal.querySelector('#visual-particle-speed');
+        if (particleRange) particleRange.value = visual.particleSpeed;
+        const parallaxToggle = modal.querySelector('#visual-parallax-toggle');
+        if (parallaxToggle) parallaxToggle.checked = !!visual.parallaxReactive;
+        const heartToggle = modal.querySelector('#visual-heart-sync-toggle');
+        if (heartToggle) heartToggle.checked = !!visual.heartSync;
+        const glassToggle = modal.querySelector('#visual-glass-toggle');
+        if (glassToggle) glassToggle.checked = !!visual.glassEnabled;
+
+        // Ensure preview matches stored config when se abre el modal
+        this.previewVisualSettings(modal);
+
         modal.classList.remove('hidden');
         // Small delay to allow display:block to apply before opacity transition
         setTimeout(() => {
@@ -442,12 +538,16 @@ export class ConfigComponent {
     }
 
     closeModal() {
-        const modal = document.getElementById('config-modal');
+        const modal = this.modal || document.getElementById('config-modal');
+        if (!modal) return;
         modal.classList.remove('opacity-100');
         modal.querySelector('div').classList.remove('scale-100');
         modal.querySelector('div').classList.add('scale-95');
         setTimeout(() => {
             modal.classList.add('hidden');
         }, 300);
+
+        // Reaplicar la configuración persistida si el usuario cerró sin guardar
+        this.applySettings();
     }
 }
