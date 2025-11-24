@@ -71,6 +71,32 @@ export class BrainKernel {
         this.protocolManager.registerStandard(new NoiseReductionProtocol(this));
         this.protocolManager.registerStandard(new JumpstartProtocol(this));
         this.protocolManager.registerStandard(new EnergyConservationProtocol(this));
+
+        this.userData = {
+            name: 'Usuario',
+            role: 'Admin'
+        };
+    }
+
+    setUserData(data) {
+        this.userData = { ...this.userData, ...data };
+        this.updateUIWithUserData();
+    }
+
+    updateUIWithUserData() {
+        const title = document.getElementById('app-title');
+        const subtitle = document.getElementById('app-subtitle');
+        
+        if (title) {
+            // Keep the emoji and version, just replace the name part if possible, or reconstruct
+            // Current: 🧠 BRAINKERNEL v3.0
+            // New: 🧠 [NAME]'S KERNEL v3.0
+            title.innerHTML = `🧠 ${this.userData.name.toUpperCase()}'S KERNEL v3.0`;
+        }
+
+        if (subtitle) {
+            subtitle.textContent = `Sistema Operativo de ${this.userData.name} - Rol: ${this.userData.role}`;
+        }
     }
 
     log(message, type = 'info') {
@@ -233,7 +259,7 @@ export class BrainKernel {
         this.lastState = newState;
 
         if (this.systemStatus) {
-            this.systemStatus.update(est, eje);
+            this.systemStatus.update(est, eje, this.lastProtocol, this.activeEmotion);
         }
 
         this.trafficLight.update(est, eje, stats, this.specialMode, this.activeEmotion);

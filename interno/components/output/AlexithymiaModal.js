@@ -13,8 +13,14 @@ export class AlexithymiaModal {
     }
 
     createModal() {
-        // Crear estructura del modal si no existe
-        if (document.getElementById('alexithymia-modal')) return;
+        // Check if modal already exists in DOM
+        const existingModal = document.getElementById('alexithymia-modal');
+        if (existingModal) {
+            this.modal = existingModal;
+            this.content = document.getElementById('alexithymia-body');
+            this.title = document.getElementById('alexithymia-title');
+            return;
+        }
 
         const modalOverlay = document.createElement('div');
         modalOverlay.id = 'alexithymia-modal';

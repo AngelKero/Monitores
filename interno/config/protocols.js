@@ -78,9 +78,18 @@ export const protocolGuides = {
         icon: "✅"
     },
     "GOD_MODE": {
-        desc: "Estado de flujo absoluto. Los límites biológicos parecen desaparecer temporalmente.",
-        tips: ["No lo interrumpas bajo ninguna circunstancia.", "Si le hablas, probablemente no te escuche.", "Déjale comida cerca y aléjate lentamente."],
-        selfHelp: ["Crea, construye, resuelve.", "Anota tus ideas geniales.", "Pon una alarma para comer, en serio."],
+        desc: "ESTADO DE RESONANCIA COGNITIVA ABSOLUTA. La latencia entre el pensamiento y la ejecución se reduce a cero. El cerebro deja de procesar información linealmente y accede a un reconocimiento de patrones instantáneo y multivariable. Se experimenta una disolución de los límites del cuerpo y una conexión directa con la lógica subyacente de la realidad. Las epifanías no ocurren; fluyen constantemente.",
+        tips: [
+            "COMUNICACIÓN ASÍNCRONA OBLIGATORIA: No le hables. Envíale un mensaje de texto. Hablar fuerza un 'Context Switch' que cuesta 25 minutos de recuperación. Leer un mensaje no.",
+            "ROL DE FIREWALL: Tu trabajo no es interactuar, es interceptar. Si alguien más intenta interrumpirlo, tú eres la barrera de seguridad.",
+            "DROP & GO (Entrega Pasiva): Deja suministros (café/snacks) en su visión periférica y retírate en silencio. No esperes un 'gracias' inmediato; el módulo de cortesía social está apagado para ahorrar energía.",
+            "EFECTO DEL OBSERVADOR: Evita el contacto visual directo. Sentirse observado puede colapsar el estado de flujo por autoconciencia."
+        ],
+        selfHelp: [
+            "VOLCADO DE MEMORIA (RAM a DISCO): Estás operando en RAM volátil. Si te duermes o te interrumpen, perderás los datos. Externaliza (Escribe/Graba) cada idea inmediatamente.",
+            "GESTIÓN TÉRMICA: Tus sensores físicos están silenciados por el software. Bebe agua mecánicamente cada 30 min aunque no sientas sed, o tendrás dolor de cabeza post-procesamiento.",
+            "APAGADO CONTROLADO (Graceful Shutdown): No intentes dormir inmediatamente después de salir del estado. Tu cerebro sigue girando a 10,000 RPM. Necesitas 1 hora de 'enfriamiento' (música, oscuridad, stimming) para no quemar fusibles."
+        ],
         icon: "🌟"
     },
     "MAGIC_HOUR": {

@@ -15,8 +15,8 @@ export class GodModeProtocol extends BaseProtocol {
         this.log("   1. APROVECHA: Escribe, programa, diseña SIN PARAR.", 'action');
         this.log("   2. REGISTRA: Graba notas de voz si escribes lento.", 'action');
         this.log("   3. PELIGRO: No olvides comer ni dormir.", 'action');
-        this.kernel.updateStatusDisplay("OMNIPOTENTE", "CREATIVO", {});
         this.kernel.updateProtocolDisplay("GOD_MODE");
+        this.kernel.updateStatusDisplay("OMNIPOTENTE", "CREATIVO", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -44,8 +44,8 @@ export class MagicHourProtocol extends BaseProtocol {
         this.log("   1. SILENCIO: Disfruta la falta de notificaciones.", 'action');
         this.log("   2. CREACIÓN: Es el mejor momento para arte/código.", 'action');
         this.log("   3. LÍMITE: Pon alarma para dormir al menos 4h.", 'action');
-        this.kernel.updateStatusDisplay("NOCTURNO", "INSPIRADO", {});
         this.kernel.updateProtocolDisplay("MAGIC_HOUR");
+        this.kernel.updateStatusDisplay("NOCTURNO", "INSPIRADO", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -64,8 +64,8 @@ export class WikiHoleProtocol extends BaseProtocol {
         this.log("   1. CONSCIENCIA: ¿Esto es útil o solo interesante?", 'action');
         this.log("   2. SALIDA: Cierra pestañas con 'Ctrl+W' sin mirar.", 'action');
         this.log("   3. ANCLA: Vuelve a tu tarea principal en 3, 2, 1...", 'action');
-        this.kernel.updateStatusDisplay("HIPER-LINK", "CURIOSO", {});
         this.kernel.updateProtocolDisplay("WIKI_HOLE");
+        this.kernel.updateStatusDisplay("HIPER-LINK", "CURIOSO", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -84,8 +84,8 @@ export class JusticeModeProtocol extends BaseProtocol {
         this.log("   1. PAUSA: ¿Vale la pena tu paz mental?", 'action');
         this.log("   2. ESCRIBE: Escribe la respuesta en Notas y BÓRRALA.", 'action');
         this.log("   3. BLOQUEA: No alimentes al troll.", 'action');
-        this.kernel.updateStatusDisplay("COMBATE", "ENFOCADO", {});
         this.kernel.updateProtocolDisplay("JUSTICE_MODE");
+        this.kernel.updateStatusDisplay("COMBATE", "ENFOCADO", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -105,8 +105,8 @@ export class EpiphanyProtocol extends BaseProtocol {
         this.log("   1. CAPTURA: Escribe/Graba la idea INMEDIATAMENTE.", 'action');
         this.log("   2. MAPA: Haz un diagrama rápido de las conexiones.", 'action');
         this.log("   3. ACCIÓN: Define el primer paso real.", 'action');
-        this.kernel.updateStatusDisplay("CLARIDAD", "ABSOLUTA", {});
         this.kernel.updateProtocolDisplay("EPIPHANY");
+        this.kernel.updateStatusDisplay("CLARIDAD", "ABSOLUTA", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -126,8 +126,8 @@ export class VoidModeProtocol extends BaseProtocol {
         this.log("   1. ANCLAJE: Nombra 5 cosas que veas ahora mismo.", 'action');
         this.log("   2. TACTO: Toca algo frío o rugoso.", 'action');
         this.log("   3. ESPERA: No intentes 'volver' a la fuerza.", 'action');
-        this.kernel.updateStatusDisplay("NULL", "NULL", {});
         this.kernel.updateProtocolDisplay("VOID_MODE");
+        this.kernel.updateStatusDisplay("NULL", "NULL", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -147,8 +147,8 @@ export class GhostModeProtocol extends BaseProtocol {
         this.log("   1. INVISIBILIDAD: No respondas a nadie.", 'action');
         this.log("   2. OBSERVACIÓN: Mira sin interactuar.", 'action');
         this.log("   3. RECARGA: Estás aquí para observar, no para actuar.", 'action');
-        this.kernel.updateStatusDisplay("OCULTO", "SIGILO", {});
         this.kernel.updateProtocolDisplay("GHOST_MODE");
+        this.kernel.updateStatusDisplay("OCULTO", "SIGILO", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -168,8 +168,8 @@ export class MeltdownProtocol extends BaseProtocol {
         this.log("   1. SALIDA: Vete al lugar seguro más cercano.", 'action');
         this.log("   2. COMUNICACIÓN: 'No puedo hablar ahora'.", 'action');
         this.log("   3. SEGURIDAD: No conduzcas ni operes maquinaria.", 'action');
-        this.kernel.updateStatusDisplay("EXPLOSIÓN", "CRÍTICO", {});
         this.kernel.updateProtocolDisplay("MELTDOWN");
+        this.kernel.updateStatusDisplay("EXPLOSIÓN", "CRÍTICO", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -189,8 +189,8 @@ export class ZombieModeProtocol extends BaseProtocol {
         this.log("   1. AUTOMÁTICO: Haz tareas que no requieran pensar.", 'action');
         this.log("   2. COMIDA: Come algo, probablemente se te olvidó.", 'action');
         this.log("   3. DORMIR: Tu cerebro ya se apagó, apaga el cuerpo.", 'action');
-        this.kernel.updateStatusDisplay("INFECTADO", "SIN SEÑAL", {});
         this.kernel.updateProtocolDisplay("ZOMBIE_MODE");
+        this.kernel.updateStatusDisplay("INFECTADO", "SIN SEÑAL", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }
@@ -209,8 +209,8 @@ export class DoomscrollingProtocol extends BaseProtocol {
         this.log("   1. ROMPE EL BUCLE: Tira el teléfono al sofá (literal).", 'action');
         this.log("   2. CAMBIO FÍSICO: Levántate y camina a otra habitación.", 'action');
         this.log("   3. REALIDAD: Mira por la ventana o toca una planta.", 'action');
-        this.kernel.updateStatusDisplay("ATRAPADO", "BUCLE", {});
         this.kernel.updateProtocolDisplay("DOOMSCROLLING");
+        this.kernel.updateStatusDisplay("ATRAPADO", "BUCLE", {});
         this.kernel.trafficLight.update(null, null, null, this.id, this.kernel.activeEmotion);
     }
 }

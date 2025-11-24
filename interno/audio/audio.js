@@ -107,43 +107,211 @@ export class SoundEngine {
 
         switch(mode) {
             case 'GOD_MODE':
-                this.startDrone(432, 'sine', 0.3);
-                this.startDrone(648, 'sine', 0.15); // 5th
+                this.startGodModeAmbience();
                 break;
             case 'MAGIC_HOUR':
-                this.startDrone(110, 'sine', 0.3); // Low A
-                this.startDrone(330, 'sine', 0.1); // E (Harmonic)
+                this.startMagicHourAmbience();
                 break;
             case 'WIKI_HOLE':
-                this.startDataStream();
+                this.startWikiHoleAmbience();
                 break;
             case 'JUSTICE_MODE':
-                this.startDrone(150, 'sawtooth', 0.15); // Aggressive
+                this.startJusticeModeAmbience();
                 break;
             case 'EPIPHANY':
-                this.playTone(880, 'sine', 2, 0.3);
-                this.startDrone(528, 'sine', 0.2);
+                this.startEpiphanyAmbience();
                 break;
             case 'VOID_MODE':
-                this.startStatic();
+                this.startVoidModeAmbience();
                 break;
             case 'GHOST_MODE':
-                this.startGhostAmbience();
+                this.startGhostModeAmbience();
                 break;
             case 'MELTDOWN':
-                this.startSiren();
+                this.startMeltdownAmbience();
                 break;
             case 'ZOMBIE_MODE':
-                this.startDrone(60, 'sawtooth', 0.2); // Low rumble
+                this.startZombieModeAmbience();
                 break;
             case 'DOOMSCROLLING':
-                this.startDrone(40, 'sine', 0.4); // Sub-bass
-                this.startStatic(); // + Static
+                this.startDoomscrollingAmbience();
                 break;
             case 'CRITICAL':
                 this.startBeep();
                 break;
         }
+    }
+
+    startGodModeAmbience() {
+        if (!this.ctx) return;
+
+        // 1. Deep Bass Drone (The Power) - A1 (55Hz)
+        this.startDrone(55, 'triangle', 0.4);
+        this.startDrone(110, 'sine', 0.3); // Octave up for reinforcement
+
+        // 2. The "Choir" (Mystical Chords) - A Major Add9
+        // A3 (220), C#4 (277), E4 (330), B4 (493)
+        const chord = [220, 277.18, 329.63, 493.88]; 
+        chord.forEach(freq => {
+            // Main note
+            this.startDrone(freq, 'sine', 0.1);
+            // Detuned slightly for "chorus" effect
+            this.startDrone(freq * 1.01, 'sine', 0.05);
+        });
+
+        // 3. Slow "War Drum" / Heartbeat of the Universe
+        const drumInterval = setInterval(() => {
+            this.playTone(45, 'square', 0.3, 0.4); // Punchy low
+            // Simulate a "boom" with a second lower tone
+            setTimeout(() => this.playTone(35, 'sine', 0.8, 0.5), 50);
+        }, 4000); // Every 4 seconds
+        this.activeIntervals.push(drumInterval);
+
+        // 4. Random "Divine Sparks" (Arpeggios)
+        // A Lydian Scale (Mystical): A, B, C#, D#, E, F#, G#
+        const scale = [880, 987.77, 1108.73, 1244.51, 1318.51, 1479.98, 1661.22];
+        const arpInterval = setInterval(() => {
+            if (Math.random() > 0.4) { // 60% chance to play
+                const note = scale[Math.floor(Math.random() * scale.length)];
+                // Play with long release for "echo" feel
+                this.playTone(note, 'sine', 1.5, 0.08);
+                // Play a harmonic
+                this.playTone(note * 2, 'sine', 1.5, 0.02);
+            }
+        }, 250); // Fast checks
+        this.activeIntervals.push(arpInterval);
+    }
+
+    startMagicHourAmbience() {
+        if (!this.ctx) return;
+        // Warm, nostalgic, lo-fi. Major 7th chords.
+        // C Major 7: C (261), E (329), G (392), B (493)
+        const chord = [261.63, 329.63, 392.00, 493.88];
+        chord.forEach(freq => {
+            this.startDrone(freq, 'sine', 0.15);
+            // Slight detune for warmth
+            this.startDrone(freq * 1.005, 'sine', 0.05);
+        });
+        // Gentle "wind" or tape hiss
+        const hissInterval = setInterval(() => {
+            this.playNoise(1.0, 'pink', 0.02);
+        }, 900);
+        this.activeIntervals.push(hissInterval);
+    }
+
+    startWikiHoleAmbience() {
+        if (!this.ctx) return;
+        // Data stream, glitchy, fast arpeggios.
+        // Computer thinking sounds.
+        const baseFreqs = [440, 880, 1760];
+        const interval = setInterval(() => {
+            const freq = baseFreqs[Math.floor(Math.random() * baseFreqs.length)] * (1 + Math.random() * 0.5);
+            this.playTone(freq, 'square', 0.05, 0.05);
+            if (Math.random() > 0.7) {
+                this.playTone(freq * 2, 'sawtooth', 0.02, 0.03); // Glitch
+            }
+        }, 80); // Very fast
+        this.activeIntervals.push(interval);
+        // Underlying hum
+        this.startDrone(110, 'square', 0.05);
+    }
+
+    startJusticeModeAmbience() {
+        if (!this.ctx) return;
+        // Aggressive, heroic, brass-like synths.
+        // D Minor: D (146), F (174), A (220)
+        this.startDrone(73.42, 'sawtooth', 0.3); // Low D Bass
+        this.startDrone(146.83, 'sawtooth', 0.2); // D
+        this.startDrone(220.00, 'sawtooth', 0.15); // A (Power chord feel)
+        
+        // Rhythmic pulse
+        const pulseInterval = setInterval(() => {
+            this.playTone(73.42, 'sawtooth', 0.2, 0.3);
+        }, 500); // Driving beat
+        this.activeIntervals.push(pulseInterval);
+    }
+
+    startEpiphanyAmbience() {
+        if (!this.ctx) return;
+        // Angelic, high-pitched, shimmering.
+        // E Major: E (329), G# (415), B (493)
+        const chord = [659.25, 830.61, 987.77]; // High octave
+        chord.forEach(freq => {
+            this.startDrone(freq, 'sine', 0.1);
+            this.startDrone(freq * 1.002, 'sine', 0.1); // Shimmer
+        });
+        // Rising tones
+        const riseInterval = setInterval(() => {
+            this.playTone(1318.51 + Math.random() * 500, 'sine', 1.0, 0.05);
+        }, 2000);
+        this.activeIntervals.push(riseInterval);
+    }
+
+    startVoidModeAmbience() {
+        if (!this.ctx) return;
+        // Empty, wind, deep sub-bass.
+        this.startDrone(30, 'sine', 0.5); // Deep sub
+        // Wind gusts
+        const windInterval = setInterval(() => {
+            this.playNoise(3.0, 'pink', 0.05 + Math.random() * 0.05);
+        }, 2500);
+        this.activeIntervals.push(windInterval);
+        this.playNoise(3.0, 'pink', 0.05);
+    }
+
+    startGhostModeAmbience() {
+        if (!this.ctx) return;
+        // Eerie, dissonant, whispering.
+        // Diminished intervals
+        this.startDrone(200, 'sine', 0.1);
+        this.startDrone(290, 'sine', 0.1); // Tritone-ish
+        
+        // Random whispers
+        const whisperInterval = setInterval(() => {
+            this.playNoise(0.5, 'white', 0.03);
+            if(Math.random() > 0.5) {
+                this.playTone(800 + Math.random() * 200, 'sine', 0.5, 0.02); // Eerie whistle
+            }
+        }, 1200);
+        this.activeIntervals.push(whisperInterval);
+    }
+
+    startMeltdownAmbience() {
+        if (!this.ctx) return;
+        // Chaotic, siren-like, dissonant.
+        this.startSiren(); // Keep the siren
+        // Add chaotic noise bursts
+        const chaosInterval = setInterval(() => {
+            this.playNoise(0.2, 'white', 0.1);
+            this.playTone(100 + Math.random() * 1000, 'sawtooth', 0.1, 0.1);
+        }, 300);
+        this.activeIntervals.push(chaosInterval);
+    }
+
+    startZombieModeAmbience() {
+        if (!this.ctx) return;
+        // Sluggish, low frequency, detuned.
+        this.startDrone(50, 'sawtooth', 0.2);
+        this.startDrone(52, 'sawtooth', 0.2); // Heavy beating/detune
+        
+        // Slow groans
+        const groanInterval = setInterval(() => {
+            this.playTone(40 + Math.random() * 10, 'triangle', 1.0, 0.2);
+        }, 3000);
+        this.activeIntervals.push(groanInterval);
+    }
+
+    startDoomscrollingAmbience() {
+        if (!this.ctx) return;
+        // Anxiety-inducing, repetitive.
+        this.startDrone(40, 'sine', 0.4); // Sub-bass
+        // Repetitive high ping
+        const pingInterval = setInterval(() => {
+            this.playTone(2000, 'sine', 0.1, 0.05); // Notification sound-ish
+        }, 800);
+        this.activeIntervals.push(pingInterval);
+        // Static
+        this.startStatic();
     }
 
     startDataStream() {

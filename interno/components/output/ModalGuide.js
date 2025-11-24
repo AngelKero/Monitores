@@ -26,7 +26,10 @@ export class ModalGuideComponent {
 
     initListeners() {
         if (this.elements.btnOpen) {
-            this.elements.btnOpen.addEventListener('click', () => this.open());
+            this.elements.btnOpen.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent bubbling to card-status-general
+                this.open();
+            });
         }
         if (this.elements.btnClose) {
             this.elements.btnClose.addEventListener('click', () => this.close());

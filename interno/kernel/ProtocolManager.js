@@ -57,10 +57,11 @@ export class ProtocolManager {
             this.kernel.log(`>> ESTADO EMOCIONAL: ${emo.name.toUpperCase()}`, 'info');
             this.kernel.log(`   ℹ️ ¿Qué hago si veo esto?`, 'info');
             this.kernel.log(`   ${emo.advice}`, 'action');
-            activeProtocol = "PROCESANDO EMOCIÓN";
+            // Mantenemos SISTEMA NOMINAL como protocolo base para que se sumen los efectos
+            // activeProtocol = "PROCESANDO EMOCIÓN"; 
         } else {
-            this.kernel.log(">> SISTEMA NOMINAL: GOD MODE.", 'success');
-            this.kernel.log("   Estás en la zona. Aprovecha para codear.", 'info');
+            this.kernel.log(">> SISTEMA NOMINAL: Todo en rango normal.", 'success');
+            this.kernel.log("   Estoy funcionando dentro de los parámetros esperados.", 'info');
             this.kernel.log("   Recordatorio: Pon una alarma para tomar agua.", 'action');
         }
 

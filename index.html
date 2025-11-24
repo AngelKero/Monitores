@@ -18,6 +18,22 @@
                     });
             });
         }
+
+        // Load User Name
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('brainkernel_user_data');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.name) {
+                        const title = document.querySelector('h1');
+                        const subtitle = document.querySelector('header p');
+                        if (title) title.innerHTML = `${data.name.toUpperCase()}'S<br>BRAINKERNEL`;
+                        if (subtitle) subtitle.textContent = `Centro de Comando Unificado v3.0 - ${data.role || 'Usuario'}`;
+                    }
+                } catch (e) { console.error(e); }
+            }
+        });
     </script>
 </head>
 <body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col items-center justify-center p-6">
